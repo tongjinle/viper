@@ -1,0 +1,14 @@
+{
+  "apps": [{
+    "name": "doctor",
+    "script": "./dist/app.js",
+    "args": [],
+    "watch": ["dist"],
+    "ignore_watch": [
+      "test",
+    ],
+    "node_args": "--harmony",
+    "merge_logs": true,
+    "cwd": "./",
+  }]
+}
