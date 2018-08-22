@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev node ./dist/app",
-    "test": "cross-env NODE_ENV=test node ./dist/test/index.js",
-    "initDb": "node ./initDb"
+    "initDb": "node ./initDb",
+    "test": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test"
+
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,10 @@
     "chalk": "^2.3.0",
     "chance": "^1.0.13",
     "glob": "^7.1.2",
-    "jasmine": "^2.9.0"
+    "jasmine": "^2.9.0",
+    "intelli-espower-loader": "^1.0.1",
+    "mocha": "^5.2.0",
+    "node-pinyin": "^0.2.3",
+    "power-assert": "^1.6.0"
   }
 }

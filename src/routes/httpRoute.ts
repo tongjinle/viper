@@ -8,8 +8,8 @@ import TokerService from '../service/tokenService';
 // 路由
 import testHandle from './testHandle';
 import tokenHandle from './tokenHandle';
+import gameHandle from './gameHandle';
 import TokenService from '../service/tokenService';
-
 
 // 错误
 import errCode from '../errCode';
@@ -38,6 +38,9 @@ export default function handler(app: express.Express) {
 
   // token
   tokenHandle(app);
+
+  // game
+  gameHandle(app);
 
   // 测试
   testHandle(app);

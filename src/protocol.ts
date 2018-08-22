@@ -30,12 +30,134 @@ export interface IResErr {
   code?: number,
   // 错误信息
   message?: string,
-} 
+}
 
-export interface IReqToken{
-  code:string,
+// token
+export interface IReqToken {
+  code: string,
 }
 
 export interface IResToken {
-  token:string,
+  token: string,
 }
+
+// special for project
+// list
+export interface IReqList {
+  index: number,
+}
+
+export interface IResList {
+  list: {
+    userId: string,
+    username: string,
+    photoList: string[],
+    count: number,
+  }[],
+}
+
+
+
+// upvote
+export interface IReqUpvote {
+  userId: string,
+  // how to upvote
+  type: 'point' | 'coin',
+  // extend info for type
+  // needed when the type is 'coin'
+  data?: any,
+}
+
+export interface IResUpvote {
+
+}
+
+// addPoint
+export interface IReqAddPoint {
+  userId: string,
+  // the reason of addPoint
+  type: 'sign' | 'money' | 'invite',
+  // entend info for type
+  data?: any,
+}
+
+
+export interface IResAddPoint {
+  point: number,
+}
+
+
+// game result
+export interface IReqReward {
+  index: number,
+}
+
+export interface IResReward {
+  winner?: {
+    userId: string,
+    username: string,
+    count: number,
+  },
+  maxUpvoter?: {
+    userId: string,
+    username: string,
+    point: number,
+    coin: number,
+  }
+  reward: {
+    imgUrlList: string[],
+    desc: string,
+    value: number,
+  },
+
+}
+
+// myUpvote
+export interface IReqMyUpvote {
+  index: number,
+}
+
+export interface IResMyUpvote {
+  upvoteList: {
+    userId: string,
+    // upvote count
+    count: number,
+  }[],
+}
+
+
+// myPoint
+export interface IReqMyPoint {
+}
+
+export interface IResMyPoint {
+  point: number,
+  coin: number,
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
