@@ -1,17 +1,24 @@
-import * as express from 'express';
-import * as Protocol from '../protocol';
-import config from '../config';
-import GameService from '../service/GameService';
-import errCode from '../errCode';
-import wx from '../wx';
-
-
+import * as express from "express";
+import * as Protocol from "../protocol";
+import config from "../config";
+import GameService from "../service/GameService";
+import errCode from "../errCode";
+import utils from "../utils";
+import { setServers } from "dns";
 
 export default function handle(app: express.Express) {
-  app.get('/list', async (req, res) => {
+  app.get("/game/currentIndex", async (req, res) => {
+    let resData: Protocol.IResCurrentIndex | Protocol.IResErr;
+    let service = await GameService.getIns();
+    let index = await service.currentIndex();
+    resData = { index };
+    res.json(resData);
+  });
+
+  app.get("/game/list", async (req, res) => {
     let resData: Protocol.IResList;
     let code: number = undefined;
-    let index = (req.query as Protocol.IReqList).index;
+    let { index } = req.query as Protocol.IReqList;
 
     let service = await GameService.getIns();
 
@@ -23,26 +30,89 @@ export default function handle(app: express.Express) {
           userId: n.userId,
           username: n.username,
           photoList: n.photoList,
-          count: n.count,
+          count: n.count
         };
-      }),
+      })
     };
 
     console.log(resData);
 
     res.json(resData);
-
   });
 
+  app.get("/game/reward", async (req, res) => {
+    let resData: Protocol.IResReward | Protocol.IResErr;
+    let service = await GameService.getIns();
+    let { index } = req.query as Protocol.IReqReward;
 
+    let data = await service.reward(index);
+
+    // todo
+    res.json(resData);
+  });
+
+  app.post("/game/upvote", async (req, res) => {
+    let resData: Protocol.IResUpvote | Protocol.IResErr;
+    let service = await GameService.getIns();
+    let { userId, type, cast } = req.body as Protocol.IReqUpvote;
+    let upvoterId = req.header("openId");
+
+    let index = await service.currentIndex();
+    let count = utils.calCount(type, cast);
+    let time = new Date();
+    await service.upvote(index, userId, upvoterId, type, cast, count, time);
+
+    res.json(resData);
+  });
+
+  app.post("/game/addPoint", async (req, res) => {
+    let resData: Protocol.IResAddPoint | Protocol.IResErr;
+    let service = await GameService.getIns();
+    let userId = req.header("openId");
+
+    let { type, cast = 0 } = req.body as Protocol.IReqAddPoint;
+    let { point, coin } = utils.calPoint(type, cast);
+    let time = new Date();
+
+    await service.addPoint(userId, point, coin, time);
+    resData = {
+      point,
+      coin
+    };
+    res.json(resData);
+  });
+
+  app.get("/game/myUpvote", async (req, res) => {
+    let resData: Protocol.IResMyUpvote | Protocol.IResErr;
+    let service = await GameService.getIns();
+    let userId = req.header("openId");
+    let { index } = req.query as Protocol.IReqMyUpvote;
+    let data = await service.myUpvote(index, userId);
+
+    let upvoteList: { userId: string; count: number }[] = [];
+    upvoteList = data.map(n => {
+      return {
+        userId: n._id,
+        count: n.count
+      };
+    });
+    resData = {
+      upvoteList
+    };
+    res.json(resData);
+  });
+
+  app.get("/game/myPoint", async (req, res) => {
+    let resData: Protocol.IResMyPoint | Protocol.IResErr;
+    let service = await GameService.getIns();
+    let userId = req.header("openId");
+
+    let data = await service.myPoint(userId);
+    resData = {
+      point: data.point,
+      coin: data.coin
+    };
+
+    res.json(resData);
+  });
 }
-
-
-
-
-
-
-
-
-
-

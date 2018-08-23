@@ -1,5 +1,4 @@
 import assert = require("assert");
-// import * as assert from 'assert';
 import Database from "../db";
 import GameService from "../service/gameService";
 
@@ -28,17 +27,6 @@ describe("game", () => {
 
   after(async () => {
     await db.close();
-  });
-
-  it("createUser", async () => {
-    await db.getCollection("user").insertOne({});
-
-    await gaService.createUser("zst", "zst");
-
-    let data = await db.getCollection("user").findOne({ userId: "zst" });
-    assert(
-      data && data.userId === "zst" && data.point === 0 && data.coin === 0
-    );
   });
 
   it("currentIndex", async () => {
@@ -128,7 +116,6 @@ describe("game", () => {
       ]);
 
     let data = await gaService.myUpvote(1, "tong");
-    console.log(data);
     assert(data.length == 2);
     assert(data.find(n => n._id === "zst").count == 3);
     assert(data.find(n => n._id === "xiao").count == 1);

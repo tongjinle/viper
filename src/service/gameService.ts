@@ -2,12 +2,6 @@ import config from "../config";
 import Database from "../db";
 import * as mongodb from "mongodb";
 
-interface IToken {
-  token: string;
-  openId: string;
-  expires: number;
-}
-
 export default class GameService {
   private static ins: GameService;
   private static db: Database;
@@ -18,13 +12,6 @@ export default class GameService {
       GameService.db = await Database.getIns();
     }
     return GameService.ins;
-  }
-
-  // create user
-  async createUser(userId: string, username: string): Promise<void> {
-    await GameService.db
-      .getCollection("user")
-      .insertOne({ userId, username, point: 0, coin: 0 });
   }
 
   // game current index
@@ -76,8 +63,6 @@ export default class GameService {
         .getCollection("user")
         .updateOne({ userId: upvoterId }, { $inc: { point: -cast } });
     }
-
-    // todo
   }
 
   // add point
@@ -88,7 +73,7 @@ export default class GameService {
   }
 
   // my upvote
-  async myUpvote(index: number, userId: string): Promise<any> {
+  async myUpvote(index: number, userId: string): Promise<any[]> {
     let pipes = [];
     pipes.push({ $match: { index, upvoterId: userId } });
     pipes.push({
