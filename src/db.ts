@@ -35,7 +35,7 @@ enum eStatus {
 export default class Database {
   private connectStr: string;
   private dbName: string;
-  private db: mongodb.Db;
+  private db: mongodb.MongoClient;
   private currDb: mongodb.Db;
 
 
@@ -65,15 +65,15 @@ export default class Database {
   }
 
   async open() {
-    this.db = (await mongodb.MongoClient.connect(this.connectStr));
+    this.db = (await mongodb.MongoClient.connect(this.connectStr, { useNewUrlParser: true }));
     this.status = eStatus.open;
-
     // dbName
     let currDb = this.currDb = this.db.db(this.dbName);
     //[name]是
     // this.[name]Collection = currDb.collection([name]);
 
   }
+
 
   async close() {
     await this.db.close();

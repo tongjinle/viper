@@ -20,5 +20,6 @@ export default {
 
 
   // ******** special for project ********
+  photoOpen:[0,0,0,100,300,1000],
 
 };
