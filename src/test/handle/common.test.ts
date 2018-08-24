@@ -1,23 +1,22 @@
 import assert = require("assert");
-import axios from "axios";
 import config from "../../config";
 import helper from "../helper";
 import TokenService from "../../service/tokenService";
+import axios, { AxiosInstance } from "axios";
 import Database from "../../db";
 
 describe("common.handle", () => {
   let db: Database;
   let service: TokenService;
-  let token;
+  let token: string;
+  let request: AxiosInstance;
+
   before(async () => {
     // db
     db = await Database.getIns();
-    // token service
-    service = await TokenService.getIns();
-    token = await service.bind(config.mockOpenId);
     // axios
-    axios.defaults.baseURL = config.apiPrefix + ":" + config.port;
-    axios.defaults.headers = { token };
+    await helper.clearToken();
+    request = await helper.getAxios();
   });
 
   beforeEach(async () => {
@@ -29,7 +28,7 @@ describe("common.handle", () => {
   });
 
   it("createUser", async () => {
-    let res = await axios.post("/common/createUser", {
+    let res = await request.post("/common/createUser", {
       username: "tongpuman"
     });
 

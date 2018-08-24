@@ -37,7 +37,7 @@ export default class TokenService {
   async check(token: string): Promise<boolean> {
     // return this.dict[token] && this.dict[token].expires > Date.now();
     let data: IToken = await this.getInfo(token);
-    return data && data.expires >= Date.now();
+    return !!(data && data.expires >= Date.now());
   }
 
   // 绑定openId,生成token
