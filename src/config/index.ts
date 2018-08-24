@@ -35,6 +35,10 @@ interface IConfig {
   invitePoint: number;
   // money获得的点数
   moneyPointRate: number;
+
+  // mock
+  mockToken: string;
+  mockOpenId: string;
 }
 
 let conf: Partial<IConfig> = {};

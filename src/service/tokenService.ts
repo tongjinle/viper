@@ -1,12 +1,11 @@
-import config from '../config';
-import Database from '../db';
-import * as mongodb from 'mongodb';
-
+import config from "../config";
+import Database from "../db";
+import * as mongodb from "mongodb";
 
 interface IToken {
-  token: string,
-  openId: string,
-  expires: number,
+  token: string;
+  openId: string;
+  expires: number;
 }
 
 export default class TokenService {
@@ -15,9 +14,9 @@ export default class TokenService {
   private static ins: TokenService;
 
   static async getIns(): Promise<TokenService> {
-    let ins = TokenService.ins = TokenService.ins || new TokenService();
+    let ins = (TokenService.ins = TokenService.ins || new TokenService());
     let db = await Database.getIns();
-    ins.coll = db.getCollection('token');
+    ins.coll = db.getCollection("token");
     return ins;
   }
 
@@ -30,7 +29,7 @@ export default class TokenService {
 
   async getInfoByOpenId(openId: string): Promise<IToken> {
     let rst: IToken;
-    rst = await this.coll.findOne({ openId, });
+    rst = await this.coll.findOne({ openId });
     return rst;
   }
 
@@ -41,11 +40,8 @@ export default class TokenService {
     return data && data.expires >= Date.now();
   }
 
-
-
-
   // 绑定openId,生成token
-  async bind(openId: string, ): Promise<string> {
+  async bind(openId: string): Promise<string> {
     const maxAge = config.tokenExpires;
     let expires = Date.now() + maxAge;
 
@@ -57,21 +53,23 @@ export default class TokenService {
       let data = await this.getInfoByOpenId(openId);
       if (data && data.expires >= Date.now()) {
         let expires = Date.now() + maxAge;
-        await this.coll.findOneAndUpdate({ openId, }, { $set: { expires: expires, }, });
+        await this.coll.findOneAndUpdate(
+          { openId },
+          { $set: { expires: expires } }
+        );
         return data.token;
       }
     }
     // 创建token
-    let token: string = Math.floor((10e8 * Math.random())).toString(16).slice(0, 8);
-    await this.coll.insertOne({ token, openId, expires, });
+    let token: string = Math.floor(10e8 * Math.random())
+      .toString(16)
+      .slice(0, 8);
+    await this.coll.insertOne({ token, openId, expires });
     return token;
   }
-
 
   // 清空
   async clear(): Promise<void> {
     await this.coll.deleteMany({});
   }
-
-
 }

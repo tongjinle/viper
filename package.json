@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev node ./dist/app",
+    "test-server": "cross-env NODE_ENV=test node ./dist/app.js",
     "initDb": "node ./initDb",
-    "test": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test"
+    "test": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/**/*.test.js",
+    "test-handle": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/handle/**/*.test.js",
+    "clean": "rm -rf dist"
   },
   "keywords": [],
   "author": "",

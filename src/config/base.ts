@@ -1,8 +1,7 @@
 import { HOUR } from "../constant";
 export default {
   port: 3000,
-
-  connectStr: "mongodb://118.31.11.29:27017",
+  connectStr: "mongodb://localhost:27017",
   dbName: "zst",
 
   wx: {

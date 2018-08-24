@@ -14,19 +14,31 @@ import TokenService from "../service/tokenService";
 
 // 错误
 import errCode from "../errCode";
+import { json } from "body-parser";
 
 export default function handler(app: express.Express) {
   app.use(async (req, res, next) => {
-    if (/\/game\//.test(req.path)) {
+    if (/\/game\/|\/common\//.test(req.path)) {
+      let token: string = req.headers["token"] as string;
+
+      let service = await TokenService.getIns();
+      let checkRst = await service.check(token);
+      console.log({ token, checkRst });
+      console.log(JSON.stringify(token));
+      if (!checkRst) {
+        res.json(errCode.invalidToken);
+        return;
+      }
+    }
+    next();
+  });
+
+  app.use(async (req, res, next) => {
+    if (/\/game\/|\/common\//.test(req.path)) {
       let service = await TokenService.getIns();
       let token: string = req.headers["token"] as string;
       let info = await service.getInfo(token);
       let openId: string = (req.headers["openId"] = info.openId);
-
-      if (!await service.check(token)) {
-        res.json(errCode.invalidToken);
-        return;
-      }
     }
     next();
   });

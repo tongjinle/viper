@@ -1,18 +1,11 @@
 import assert = require("assert");
-import Database from "../db";
-import GameService from "../service/gameService";
+import Database from "../../db";
+import GameService from "../../service/gameService";
+import helper from "../helper";
 
 describe("game", () => {
   let db: Database;
   let gaService: GameService;
-
-  let clearAll = async () => {
-    await Promise.all(
-      ["user", "upvote", "list", "reward"].map(async n => {
-        await db.getCollection(n).deleteMany({});
-      })
-    );
-  };
 
   before(async () => {
     db = await Database.getIns();
@@ -20,7 +13,7 @@ describe("game", () => {
   });
 
   beforeEach(async () => {
-    await clearAll();
+    await helper.clearAll();
   });
 
   afterEach(async () => {});

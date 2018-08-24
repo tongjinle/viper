@@ -1,4 +1,2 @@
 // 数据结构
-export interface IBaseSchema {
-
-}
+export interface IBaseSchema {}

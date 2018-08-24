@@ -1,6 +1,6 @@
 import assert = require("assert");
-import Database from "../db";
-import CommonService from "../service/commonService";
+import Database from "../../db";
+import CommonService from "../../service/commonService";
 
 describe("game", () => {
   let db: Database;
