@@ -14,14 +14,15 @@ export default class GameService {
   }
 
   // game current index
+  //
   async currentIndex(): Promise<number> {
     let data = await GameService.db
       .getCollection("reward")
-      .find({})
+      .find({ status: 0 })
       .sort({ index: -1 })
       .limit(1)
       .toArray();
-    return data[0].index;
+    return data.length ? data[0].index : -1;
   }
 
   // game list
@@ -62,25 +63,6 @@ export default class GameService {
         .getCollection("user")
         .updateOne({ userId: upvoterId }, { $inc: { point: -cast } });
     }
-  }
-
-  async canUpvote(
-    index: number,
-    userId: string,
-    upvoterId: string,
-    type: string,
-    cast: number
-  ): Promise<IErr> {
-    let rst: IErr;
-
-    // 第index届比赛是不是还在进行中
-
-    // userId 是不是存在
-    // upvoterId 是不是存在
-    // type 是不是合法
-    // upvoter是不是有足够的cast
-
-    return rst;
   }
 
   // add point

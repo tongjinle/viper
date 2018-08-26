@@ -27,7 +27,12 @@ describe("common.handle", () => {
     await helper.close();
   });
 
-  xit("upvote", async () => {
+  it("upvote", async () => {
+    await db.getCollection("reward").insertOne({
+      index: 1,
+      status: 0
+    });
+
     let reqData: Protocol.IReqUpvote = {
       userId: "zst",
       type: "point",

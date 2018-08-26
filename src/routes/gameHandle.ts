@@ -4,10 +4,9 @@ import config from "../config";
 import GameService from "../service/GameService";
 import { ErrCode } from "../errCode";
 import utils from "../utils";
-import { setServers } from "dns";
-import { serveStatic } from "serve-static";
 import { Db } from "mongodb";
 import Database from "../db";
+import CheckService from "../service/checkService";
 
 export default function handle(app: express.Express) {
   app.get("/game/currentIndex", async (req, res) => {
@@ -69,18 +68,19 @@ export default function handle(app: express.Express) {
     let upvoterId = req.headers["openId"] as string;
 
     let index = await service.currentIndex();
-    // TODO
-    // 判断能否upvote
-    let err = await service.canUpvote(index, userId, upvoterId, type, cast);
-    if (err) {
-      res.json(err);
-      return;
+    {
+      let service = await CheckService.getIns();
+      let err = await service.canUpvote(index, userId, upvoterId, type, cast);
+      if (err) {
+        res.json(err);
+        return;
+      }
     }
 
     let count = utils.calCount(type, cast);
     let time = new Date();
     await service.upvote(index, userId, upvoterId, type, cast, count, time);
-
+    resData = {};
     res.json(resData);
   });
 

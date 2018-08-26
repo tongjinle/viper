@@ -2,6 +2,7 @@ import * as express from "express";
 import * as Protocol from "../protocol";
 
 import CommonService from "../service/commonService";
+import CheckService from "../service/checkService";
 
 export default function handle(app: express.Express) {
   app.post("/common/createUser", async (req, res) => {
@@ -10,6 +11,17 @@ export default function handle(app: express.Express) {
     let userId = req.headers["openId"] as string;
 
     let service = await CommonService.getIns();
+
+    // check
+    {
+      let service = await CheckService.getIns();
+      let err = await service.canCreateUser(userId, username);
+      if (err) {
+        res.json(err);
+        return;
+      }
+    }
+
     await service.createUser(userId, username);
 
     resData = {};
