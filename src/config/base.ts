@@ -23,5 +23,5 @@ export default {
   //
   signPoint: 1,
   invitePoint: 1,
-  moneyPointRate: 1
+  moneyPointRate: 100
 };

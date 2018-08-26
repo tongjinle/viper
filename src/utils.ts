@@ -14,6 +14,7 @@ let utils = {
     return rst;
   },
 
+  // 计算增加的点数
   calPoint(
     type: "sign" | "money" | "invite",
     count: number

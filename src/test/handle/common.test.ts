@@ -1,13 +1,11 @@
 import assert = require("assert");
 import config from "../../config";
 import helper from "../helper";
-import TokenService from "../../service/tokenService";
 import axios, { AxiosInstance } from "axios";
 import Database from "../../db";
 
 describe("common.handle", () => {
   let db: Database;
-  let service: TokenService;
   let token: string;
   let request: AxiosInstance;
 

@@ -1,7 +1,6 @@
 import config from "../config";
 import Database from "../db";
-import * as mongodb from "mongodb";
-
+import { ErrCode, IErr } from "../errCode";
 export default class GameService {
   private static ins: GameService;
   private static db: Database;
@@ -35,7 +34,7 @@ export default class GameService {
   // game result
   async reward(index: number): Promise<any> {
     // fields:
-    // [index,winnerId,upvoterId,reward.desc,reward.imgUrlList,reward.value]
+    // [index,winnerId,upvoterId,reward.desc,reward.photoList,reward.value]
     return await GameService.db.getCollection("reward").findOne({ index });
   }
 
@@ -65,11 +64,39 @@ export default class GameService {
     }
   }
 
+  async canUpvote(
+    index: number,
+    userId: string,
+    upvoterId: string,
+    type: string,
+    cast: number
+  ): Promise<IErr> {
+    let rst: IErr;
+
+    // 第index届比赛是不是还在进行中
+
+    // userId 是不是存在
+    // upvoterId 是不是存在
+    // type 是不是合法
+    // upvoter是不是有足够的cast
+
+    return rst;
+  }
+
   // add point
   async addPoint(userId: string, point: number, coin: number, time: Date) {
     await GameService.db
       .getCollection("user")
       .updateOne({ userId }, { $inc: { point, coin } });
+  }
+
+  async canAddPoint(userId: string, type: string): Promise<IErr> {
+    let rst: IErr;
+    let isVaildType = ["sign", "money", "invite"].indexOf(type) >= 0;
+    if (!isVaildType) {
+      rst = ErrCode.invalidAddPointType;
+    }
+    return rst;
   }
 
   // my upvote

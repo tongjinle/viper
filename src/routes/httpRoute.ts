@@ -13,7 +13,7 @@ import commonHandle from "./commonHandle";
 import TokenService from "../service/tokenService";
 
 // 错误
-import errCode from "../errCode";
+import { ErrCode } from "../errCode";
 import { json } from "body-parser";
 
 export default function handler(app: express.Express) {
@@ -26,7 +26,7 @@ export default function handler(app: express.Express) {
       console.log({ token, checkRst });
       console.log(JSON.stringify(token));
       if (!checkRst) {
-        res.json(errCode.invalidToken);
+        res.json(ErrCode.invalidToken);
         return;
       }
     }

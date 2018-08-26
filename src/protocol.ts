@@ -58,7 +58,6 @@ export interface IResUpvote {}
 
 // addPoint
 export interface IReqAddPoint {
-  userId: string;
   // the reason of addPoint
   type: "sign" | "money" | "invite";
   // cast
@@ -79,6 +78,9 @@ export interface IResReward {
   winner?: {
     userId: string;
     username: string;
+    photoList: string[];
+    // 纪念照
+    memoryPhoto: string[];
     count: number;
   };
   maxUpvoter?: {

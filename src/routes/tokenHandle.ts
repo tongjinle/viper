@@ -3,7 +3,7 @@ import * as Protocol from "../protocol";
 import config from "../config";
 import TokenService from "../service/tokenService";
 import axios from "axios";
-import errCode from "../errCode";
+import { ErrCode } from "../errCode";
 import wx from "../wx";
 
 export default function handle(app: express.Express) {
@@ -17,7 +17,7 @@ export default function handle(app: express.Express) {
     // 获取openId失败
     if (!openId) {
       code = 0;
-      resData = errCode.getOpenIdFail;
+      resData = ErrCode.getOpenIdFail;
       res.json(resData);
       return;
     }
