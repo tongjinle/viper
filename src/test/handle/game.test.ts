@@ -33,14 +33,187 @@ describe("common.handle", () => {
       status: 0
     });
 
-    let reqData: Protocol.IReqUpvote = {
-      userId: "zst",
-      type: "point",
-      cast: 10
-    };
-    let res = await request.post("/game/upvote", reqData);
+    await db
+      .getCollection("list")
+      .insertMany([
+        { index: 1, userId: "zst", username: "zst" },
+        { index: 1, userId: "xiao", username: "xiao" }
+      ]);
 
-    assert.deepEqual(res.data, {});
+    await db.getCollection("user").insertMany([
+      {
+        userId: config.mockOpenId,
+        username: config.mockOpenId,
+        point: 100,
+        coin: 0
+      }
+    ]);
+
+    // 合法
+    {
+      let reqData: Protocol.IReqUpvote = {
+        userId: "zst",
+        type: "point",
+        cast: 10
+      };
+      let res = await request.post("/game/upvote", reqData);
+
+      assert.deepEqual(res.data, {});
+    }
+  });
+
+  // upvote-不存在的index
+  it("upvote-invalidIndex", async () => {
+    {
+      let reqData: Protocol.IReqUpvote = {
+        userId: "zst",
+        type: "point",
+        cast: 10
+      };
+      let res = await request.post("/game/upvote", reqData);
+
+      assert(res.data.code === ErrCode.invalidCurrentIndex.code);
+    }
+  });
+
+  // 不存在的up主
+  it("upvote-invalidUperId", async () => {
+    await db.getCollection("reward").insertOne({
+      index: 1,
+      status: 0
+    });
+
+    await db
+      .getCollection("list")
+      .insertMany([
+        { index: 1, userId: "zst", username: "zst" },
+        { index: 1, userId: "xiao", username: "xiao" }
+      ]);
+
+    await db.getCollection("user").insertMany([
+      {
+        userId: config.mockOpenId,
+        username: config.mockOpenId,
+        point: 100,
+        coin: 0
+      }
+    ]);
+
+    {
+      let reqData: Protocol.IReqUpvote = {
+        userId: "none",
+        type: "point",
+        cast: 10
+      };
+      let res = await request.post("/game/upvote", reqData);
+
+      assert(res.data.code === ErrCode.invalidUperId.code);
+    }
+  });
+
+  // 不存在的upvoter
+  it("upvote-invalidUpvoterId", async () => {
+    await db.getCollection("reward").insertOne({
+      index: 1,
+      status: 0
+    });
+
+    await db
+      .getCollection("list")
+      .insertMany([
+        { index: 1, userId: "zst", username: "zst" },
+        { index: 1, userId: "xiao", username: "xiao" }
+      ]);
+
+    await db.getCollection("user").insertMany([
+      {
+        userId: "none",
+        username: "none",
+        point: 100,
+        coin: 0
+      }
+    ]);
+
+    {
+      let reqData: Protocol.IReqUpvote = {
+        userId: "zst",
+        type: "point",
+        cast: 10
+      };
+      let res = await request.post("/game/upvote", reqData);
+
+      assert(res.data.code === ErrCode.invalidUpvoterId.code);
+    }
+  });
+
+  // upvoter的消费方式不对
+  it("upvote-invalidUpvoteType", async () => {
+    await db.getCollection("reward").insertOne({
+      index: 1,
+      status: 0
+    });
+
+    await db
+      .getCollection("list")
+      .insertMany([
+        { index: 1, userId: "zst", username: "zst" },
+        { index: 1, userId: "xiao", username: "xiao" }
+      ]);
+
+    await db.getCollection("user").insertMany([
+      {
+        userId: config.mockOpenId,
+        username: config.mockOpenId,
+        point: 100,
+        coin: 0
+      }
+    ]);
+
+    {
+      let reqData /* : Protocol.IReqUpvote */ = {
+        userId: "zst",
+        type: "none",
+        cast: 10
+      };
+      let res = await request.post("/game/upvote", reqData);
+
+      assert(res.data.code === ErrCode.invalidUpvoteType.code);
+    }
+  });
+
+  // upvoter的point不够
+  it("upvote-notEnoughPoint", async () => {
+    await db.getCollection("reward").insertOne({
+      index: 1,
+      status: 0
+    });
+
+    await db
+      .getCollection("list")
+      .insertMany([
+        { index: 1, userId: "zst", username: "zst" },
+        { index: 1, userId: "xiao", username: "xiao" }
+      ]);
+
+    await db.getCollection("user").insertMany([
+      {
+        userId: config.mockOpenId,
+        username: config.mockOpenId,
+        point: 100,
+        coin: 0
+      }
+    ]);
+
+    {
+      let reqData: Protocol.IReqUpvote = {
+        userId: "zst",
+        type: "point",
+        cast: 10000
+      };
+      let res = await request.post("/game/upvote", reqData);
+
+      assert(res.data.code === ErrCode.notEnoughPoint.code);
+    }
   });
 
   it("list", async () => {
