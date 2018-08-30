@@ -25,7 +25,11 @@ describe("game", () => {
   it("currentIndex", async () => {
     await db
       .getCollection("reward")
-      .insertMany([{ index: 1 }, { index: 2 }, { index: 3 }]);
+      .insertMany([
+        { index: 1, status: 1 },
+        { index: 2, status: 1 },
+        { index: 3, status: 0 }
+      ]);
 
     let data = await gaService.currentIndex();
     assert(data === 3);

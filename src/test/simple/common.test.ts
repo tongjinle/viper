@@ -2,7 +2,7 @@ import assert = require("assert");
 import Database from "../../db";
 import CommonService from "../../service/commonService";
 
-describe("game", () => {
+describe("common", () => {
   let db: Database;
   let coService: CommonService;
 

@@ -18,18 +18,18 @@ export default class GameService {
   async currentIndex(): Promise<number> {
     let data = await GameService.db
       .getCollection("reward")
-      .find({ status: 0 })
-      .sort({ index: -1 })
-      .limit(1)
-      .toArray();
-    return data.length ? data[0].index : -1;
+      .findOne({ status: 0 });
+    return data ? data.index : -1;
   }
 
   // game list
   async list(index: number): Promise<any> {
     // fields:
     // [index,userId,userName,photoList,count]
-    return await GameService.db.getCollection("list").find({ index }).toArray();
+    return await GameService.db
+      .getCollection("list")
+      .find({ index })
+      .toArray();
   }
 
   // game result
