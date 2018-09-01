@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as Protocol from "../protocol";
 import config from "../config";
-import GameService from "../service/GameService";
+import GameService from "../service/gameService";
 import { ErrCode } from "../errCode";
 import utils from "../utils";
 import { Db } from "mongodb";
