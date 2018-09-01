@@ -1,6 +1,8 @@
 import * as Http from "http";
+import * as Https from "https";
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import * as fs from "fs";
 
 import loger from "./logIns";
 import config from "./config";
@@ -64,7 +66,7 @@ class Main {
 
     // 启动
     let { port } = config;
-    app.listen(port, () => {
+    let cb = () => {
       console.log("=======================================");
       console.log(new Date());
       console.log(`** start https server at port(${port}) **`);
@@ -74,7 +76,21 @@ class Main {
         console.log(`visit url: ${config.apiPrefix}:${config.port}/test`);
         console.log(`visit url: ${config.apiPrefix}:${config.port}/test/db`);
       }
-    });
+    };
+
+    if ("product" === process.env.NODE_ENV) {
+      // 启动https
+      let opts: Https.ServerOptions = {
+        key: fs.readFileSync("./cert/index.key"),
+        cert: fs.readFileSync("./cert/index.pem")
+      };
+      let httpsServer = Https.createServer(opts, app);
+      // https end
+
+      httpsServer.listen(port, cb);
+    } else {
+      app.listen(port, cb);
+    }
   }
 }
 

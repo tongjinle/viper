@@ -46,6 +46,8 @@ if ("test" === env) {
   conf = Object.assign({}, baseConf, testConf);
 } else if ("dev" === env) {
   conf = Object.assign({}, baseConf, devConf);
+} else if ("product" === env) {
+  conf = Object.assign({}, baseConf, prodConf);
 } else {
   throw "invalid environment: " + env;
 }
