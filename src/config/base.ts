@@ -5,8 +5,8 @@ export default {
   dbName: "zst",
 
   wx: {
-    appId: "wx76c2cfaf352e3a62",
-    appSecret: "61925af2bb3d710aa2e84699b9cf0466",
+    appId: "wxfdb0bd7037208c77",
+    appSecret: "f2a1d8b4e348164bf359f14776ec8433",
     // 信息模版Id
     templateId: "rbrtfn6Qt0UYaI3G6hnBUjr6Vikoz5Q9B1Wdvk4q82E"
   },
