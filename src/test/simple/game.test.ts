@@ -36,7 +36,7 @@ describe("game", () => {
   });
 
   it("reward", async () => {
-    // index, winnerId, upvoterId, reward.desc, reward.imgUrlList, reward.value
+    // index, winnerId, upvoterId, reward.desc, reward.photoList, reward.value
     await db
       .getCollection("reward")
       .insertMany([

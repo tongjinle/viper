@@ -3,6 +3,7 @@ import * as Https from "https";
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as fs from "fs";
+import * as path from "path";
 
 import loger from "./logIns";
 import config from "./config";
@@ -26,6 +27,9 @@ class Main {
     // 中间件
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
+
+    // 静态文件
+    app.use("/static", express.static(path.join(__dirname, "./public")));
 
     // 过滤掉option
     app.use((req, res, next) => {
