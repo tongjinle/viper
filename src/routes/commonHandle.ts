@@ -15,14 +15,14 @@ export default function handle(app: express.Express) {
     // check
     {
       let service = await CheckService.getIns();
-      let err = await service.canCreateUser(userId, username);
+      let err = await service.canCreateUser(userId);
       if (err) {
         res.json(err);
         return;
       }
     }
 
-    await service.createUser(userId, username);
+    await service.createUser(userId, username, new Date());
 
     resData = {};
     res.json(resData);

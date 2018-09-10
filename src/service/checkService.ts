@@ -16,10 +16,9 @@ export default class CheckService {
   }
 
   // create user
-  async canCreateUser(userId: string, username: string): Promise<IErr> {
+  async canCreateUser(userId: string): Promise<IErr> {
     let rst: IErr;
-    rst =
-      (await this.isUserExists(userId)) || (await this.checkUsername(username));
+    rst = await this.isUserExists(userId);
     return rst;
   }
 

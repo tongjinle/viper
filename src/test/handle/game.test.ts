@@ -333,4 +333,23 @@ describe("common.handle", () => {
     assert(res.data.coin === 200);
     assert(res.data.point === 100);
   });
+
+  it("myPoint-with wrong token", async () => {
+    await db.getCollection("user").insertOne({
+      userId: config.mockOpenId,
+      username: config.mockOpenId,
+      point: 100,
+      coin: 200
+    });
+
+    let res = (await request.get("/game/myPoint", {
+      headers: {
+        token: "wrongheader"
+      }
+    })) as {
+      data: Protocol.IResErr;
+    };
+
+    assert(res.data.code === ErrCode.invalidToken.code);
+  });
 });

@@ -5,6 +5,8 @@ import TokenService from "../service/tokenService";
 import axios from "axios";
 import { ErrCode } from "../errCode";
 import wx from "../wx";
+import CommonService from "../service/commonService";
+import CheckService from "../service/checkService";
 
 export default function handle(app: express.Express) {
   app.get("/getToken", async (req, res) => {
@@ -20,6 +22,19 @@ export default function handle(app: express.Express) {
       resData = ErrCode.getOpenIdFail;
       res.json(resData);
       return;
+    }
+
+    // 尝试把openId插入到user表
+    {
+      // check
+      {
+        let service = await CheckService.getIns();
+        let err = await service.canCreateUser(openId);
+        if (!err) {
+          let service = await CommonService.getIns();
+          await service.createUser(openId, "", new Date());
+        }
+      }
     }
 
     let service = await TokenService.getIns();

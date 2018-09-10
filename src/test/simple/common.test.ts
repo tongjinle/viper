@@ -32,7 +32,7 @@ describe("common", () => {
   it("createUser", async () => {
     await db.getCollection("user").insertOne({});
 
-    await coService.createUser("zst", "zst");
+    await coService.createUser("zst", "zst", new Date());
 
     let data = await db.getCollection("user").findOne({ userId: "zst" });
     assert(
