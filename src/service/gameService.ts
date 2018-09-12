@@ -1,6 +1,7 @@
 import config from "../config";
 import Database from "../db";
 import { ErrCode, IErr } from "../errCode";
+import MemoryService from "./memoryService";
 export default class GameService {
   private static ins: GameService;
   private static db: Database;
@@ -72,12 +73,44 @@ export default class GameService {
       .updateOne({ userId }, { $inc: { point, coin } });
   }
 
-  async canAddPoint(userId: string, type: string): Promise<IErr> {
+  async canAddPoint(
+    userId: string,
+    type: "sign" | "money" | "invite"
+  ): Promise<IErr> {
     let rst: IErr;
+
+    // 是否是合法的类型
     let isVaildType = ["sign", "money", "invite"].indexOf(type) >= 0;
     if (!isVaildType) {
       rst = ErrCode.invalidAddPointType;
+      return rst;
     }
+
+    let now: Date;
+    {
+      now = new Date();
+      now.setHours(0, 0, 0, 0);
+    }
+
+    let service = await MemoryService.getIns();
+    // 签到每天只能1次
+    if (type === "sign") {
+      let data = await service.read(userId + "addPoint.sign");
+      if (data === 1) {
+        rst = ErrCode.signAgain;
+        return rst;
+      }
+    }
+
+    // 转发每天只能10次
+    else if (type === "invite") {
+      let data = await service.read(userId + "addPoint.invite");
+      if (data === 10) {
+        rst = ErrCode.inviteTooMuch;
+        return rst;
+      }
+    }
+
     return rst;
   }
 

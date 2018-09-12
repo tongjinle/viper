@@ -7,6 +7,7 @@ import utils from "../utils";
 import { Db } from "mongodb";
 import Database from "../db";
 import CheckService from "../service/checkService";
+import MemoryService from "../service/memoryService";
 
 export default function handle(app: express.Express) {
   app.get("/game/currentIndex", async (req, res) => {
@@ -54,9 +55,21 @@ export default function handle(app: express.Express) {
     let resData: Protocol.IResReward | Protocol.IResErr;
     let service = await GameService.getIns();
     let { index } = req.query as Protocol.IReqReward;
+    index = index - 0;
 
     let data = await service.reward(index);
     resData = data;
+
+    if (resData) {
+      // 这些游戏数据暂时来自config文件
+      (resData as Protocol.IResReward).rule = {
+        ...(resData as Protocol.IResReward).rule,
+        hotIntervalList: config.photoOpen,
+        inviteCount: config.inviteCount,
+        signCount: config.signCount
+      };
+    }
+    console.log({ index, resData });
 
     res.json(resData);
   });
@@ -93,11 +106,18 @@ export default function handle(app: express.Express) {
     let { point, coin } = utils.calPoint(type, cast);
     let time = new Date();
 
-    // 判断是不是合法的类型
     let err = await service.canAddPoint(userId, type);
     if (err) {
       res.json(err);
       return;
+    }
+    {
+      let service = await MemoryService.getIns();
+      if (type === "sign") {
+        await service.write(userId + "addPoint.sign", 1);
+      } else if (type === "invite") {
+        await service.write(userId + "addPoint.invite", 1);
+      }
     }
 
     await service.addPoint(userId, point, coin, time);

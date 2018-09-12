@@ -23,5 +23,10 @@ export default {
   //
   signPoint: 1,
   invitePoint: 1,
-  moneyPointRate: 100
+  moneyPointRate: 100,
+
+  // 每日签到最大次数
+  signCount: 1,
+  // 每日转发最大次数
+  inviteCount: 10
 };

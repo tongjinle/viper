@@ -85,7 +85,11 @@ async function createIndex(ins) {
 
 async function createDevData(ins) {
   let curr = ins.db(databaseName);
-
+  let now = new Date();
+  now.setHours(0, 0, 0);
+  const DAY = 24 * 60 * 60 * 1000;
+  let beginTime = new Date(now.getTime() - 2 * DAY);
+  let endTime = new Date(now.getTime() + 5 * DAY);
   // reward
   await curr.collection("reward").insertMany([
     {
@@ -99,6 +103,10 @@ async function createDevData(ins) {
         desc: "扑满萝莉裙",
         value: 500,
         photoList: ["1.jpg", "2.jpg", "3.jpg"]
+      },
+      rule: {
+        beginTime,
+        endTime
       }
     }
   ]);
@@ -109,6 +117,7 @@ async function createDevData(ins) {
       index: 2,
       userId: "zst",
       username: "小猫",
+      logo: "https://api.puman.xyz/static/images/1.jpg",
       photoList: [
         "https://api.puman.xyz/static/images/1.jpg",
         "https://api.puman.xyz/static/images/2.jpg",
@@ -120,6 +129,7 @@ async function createDevData(ins) {
       index: 2,
       userId: "zst2",
       username: "落落",
+      logo: "https://api.puman.xyz/static/images/11.jpg",
       photoList: [
         "https://api.puman.xyz/static/images/11.jpg",
         "https://api.puman.xyz/static/images/12.jpg",

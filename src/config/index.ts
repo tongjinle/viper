@@ -36,6 +36,11 @@ interface IConfig {
   // money获得的点数
   moneyPointRate: number;
 
+  // 每日签到最大次数
+  signCount: number;
+  // 每日转发最大次数
+  inviteCount: number;
+
   // mock
   mockToken: string;
   mockOpenId: string;

@@ -7,7 +7,7 @@ let db: Database;
 let clearAll = async () => {
   await open();
   await Promise.all(
-    ["user", "upvote", "list", "reward"].map(async n => {
+    ["user", "upvote", "list", "reward", "memory"].map(async n => {
       await db.getCollection(n).deleteMany({});
     })
   );

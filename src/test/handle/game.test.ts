@@ -27,6 +27,23 @@ describe("common.handle", () => {
     await helper.close();
   });
 
+  it("reward", async () => {
+    await db.getCollection("reward").insertOne({
+      index: 1,
+      status: 0
+    });
+
+    {
+      let reqData: Protocol.IReqReward = {
+        index: 1
+      };
+      let res = await request.get("/game/reward", { params: reqData });
+
+      assert(res.data.rule.signCount === 1);
+      assert(res.data.rule.inviteCount === 10);
+    }
+  });
+
   it("upvote", async () => {
     await db.getCollection("reward").insertOne({
       index: 1,

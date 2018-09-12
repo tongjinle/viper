@@ -26,4 +26,6 @@ export class ErrCode {
   static invalidUpvoterId: IErr = { code: 903, message: "打榜者不存在" };
   static invalidUpvoteType: IErr = { code: 904, message: "非法的打榜类型" };
   static notEnoughPoint: IErr = { code: 905, message: "缺乏足够的point" };
+  static signAgain: IErr = { code: 906, message: "重复签到" };
+  static inviteTooMuch: IErr = { code: 907, message: "转发奖励到达上限" };
 }

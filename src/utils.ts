@@ -28,6 +28,11 @@ let utils = {
       rst.coin += count * config.moneyPointRate;
     }
     return rst;
+  },
+  getToday(): number {
+    let now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return now.getTime();
   }
 };
 

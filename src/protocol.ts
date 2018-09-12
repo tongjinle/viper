@@ -134,6 +134,18 @@ export interface IResReward {
     // 奖品的价值
     value: number;
   };
+  rule: {
+    // 开始时间(时间戳)
+    beginTime: number;
+    // 结束时间(时间戳)
+    endTime: number;
+    // 热度临界点
+    hotIntervalList: number[];
+    // 每日签到上限
+    signCount: number;
+    // 每日转发(邀请)上限
+    inviteCount: number;
+  };
 }
 
 // myUpvote
