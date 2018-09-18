@@ -36,7 +36,7 @@ export default class MemoryService {
     );
   }
 
-  async read(key) {
+  async read(key): Promise<number> {
     let data = await MemoryService.db.getCollection("memory").findOne({
       key,
       ts: utils.getToday()

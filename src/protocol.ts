@@ -176,3 +176,12 @@ export interface IResMyPoint {
   // coin剩余数量
   coin: number;
 }
+
+// myAddPoint
+// 查看我的增加point的状态,因为有的已经不能增加了(比如签到只能一次)
+export interface IReqMyAddPoint {}
+
+export interface IResMyAddPoint {
+  sign: number;
+  invite: number;
+}

@@ -5,6 +5,7 @@ import Database from "../../db";
 import { AxiosInstance } from "axios";
 import * as Protocol from "../../protocol";
 import { ErrCode } from "../../errCode";
+import utils from "../../utils";
 
 let mockOpenId = config.mockOpenId;
 
@@ -368,5 +369,27 @@ describe("common.handle", () => {
     };
 
     assert(res.data.code === ErrCode.invalidToken.code);
+  });
+
+  it("myAddPoint", async () => {
+    await db.getCollection("user").insertOne({
+      userId: config.mockOpenId,
+      username: config.mockOpenId,
+      point: 100,
+      coin: 200
+    });
+
+    await db.getCollection("memory").insertOne({
+      key: config.mockOpenId + "addPoint.invite",
+      ts: utils.getToday(),
+      value: 1
+    });
+
+    let res = (await request.get("/game/myAddPoint")) as {
+      data: Protocol.IResMyAddPoint;
+    };
+
+    assert(res.data.sign === 1);
+    assert(res.data.invite === 9);
   });
 });

@@ -161,4 +161,23 @@ export default function handle(app: express.Express) {
 
     res.json(resData);
   });
+
+  app.get("/game/myAddPoint", async (req, res) => {
+    let resData: Protocol.IResMyAddPoint | Protocol.IResErr;
+    let userId = req.headers["openId"] as string;
+    let signCount: number = 0;
+    let inviteCount: number = 0;
+    {
+      let service = await MemoryService.getIns();
+      signCount =
+        config.signCount - (await service.read(userId + "addPoint.sign"));
+      inviteCount =
+        config.inviteCount - (await service.read(userId + "addPoint.invite"));
+    }
+    resData = {
+      sign: signCount,
+      invite: inviteCount
+    };
+    res.json(resData);
+  });
 }
