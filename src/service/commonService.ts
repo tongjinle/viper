@@ -22,6 +22,6 @@ export default class CommonService {
   ): Promise<void> {
     await CommonService.db
       .getCollection("user")
-      .insertOne({ userId, username, time, point: 0, coin: 0 });
+      .insertOne({ userId, username, time, point: 1, coin: 0 });
   }
 }
