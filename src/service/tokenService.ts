@@ -51,7 +51,7 @@ export default class TokenService {
     // 使用缓存的未过期的token
     {
       let data = await this.getInfoByOpenId(openId);
-      if (data && data.expires >= Date.now()) {
+      if (data) {
         let expires = Date.now() + maxAge;
         await this.coll.findOneAndUpdate(
           { openId },

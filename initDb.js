@@ -90,7 +90,7 @@ async function createDevData(ins) {
   const DAY = 24 * 60 * 60 * 1000;
   let beginTime = new Date(now.getTime() - 2 * DAY);
   let endTime = new Date(now.getTime() + 5 * DAY);
-  let prefix = "https://api.puman.xyz/static";
+  let prefix = "https://api.puman.xyz/static/images";
   // reward
   await curr.collection("reward").insertMany([
     {
