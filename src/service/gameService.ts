@@ -16,10 +16,10 @@ export default class GameService {
 
   // game current index
   //
-  async currentIndex(): Promise<number> {
+  async currentIndex(currentDate: Date = new Date()): Promise<number> {
     let data = await GameService.db
       .getCollection("reward")
-      .findOne({ status: 0 });
+      .findOne({ status: 0, "rule.endTime": { $gte: currentDate } });
     return data ? data.index : -1;
   }
 
