@@ -41,7 +41,7 @@ export default class TokenService {
   }
 
   // 绑定openId,生成token
-  async bind(openId: string): Promise<string> {
+  async bind(openId: string): Promise<{ token: string; expires: number }> {
     const maxAge = config.tokenExpires;
     let expires = Date.now() + maxAge;
 
@@ -53,11 +53,8 @@ export default class TokenService {
       let data = await this.getInfoByOpenId(openId);
       if (data) {
         let expires = Date.now() + maxAge;
-        await this.coll.findOneAndUpdate(
-          { openId },
-          { $set: { expires: expires } }
-        );
-        return data.token;
+        await this.coll.findOneAndUpdate({ openId }, { $set: { expires } });
+        return { token: data.token, expires };
       }
     }
     // 创建token
@@ -65,7 +62,7 @@ export default class TokenService {
       .toString(16)
       .slice(0, 8);
     await this.coll.insertOne({ token, openId, expires });
-    return token;
+    return { token, expires };
   }
 
   // 清空

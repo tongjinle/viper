@@ -29,7 +29,7 @@ let close = async () => {
 let getAxios = async () => {
   // token service
   let service = await TokenService.getIns();
-  let token = await service.bind(config.mockOpenId);
+  let { token } = await service.bind(config.mockOpenId);
   return axios.create({
     baseURL: config.apiPrefix + ":" + config.port,
     headers: { token }

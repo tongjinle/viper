@@ -15,6 +15,7 @@ export interface IReqToken {
 
 export interface IResToken {
   token: string;
+  expires: number;
 }
 
 // special for project

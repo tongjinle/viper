@@ -38,8 +38,8 @@ export default function handle(app: express.Express) {
     }
 
     let service = await TokenService.getIns();
-    let token = await service.bind(openId);
-    resData = { token };
+    let { token, expires } = await service.bind(openId);
+    resData = { token, expires };
     res.json(resData);
   });
 }
