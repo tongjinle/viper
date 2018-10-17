@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as Protocol from "../protocol";
+import config from "../config";
 
 import CommonService from "../service/commonService";
 import CheckService from "../service/checkService";
@@ -22,7 +23,13 @@ export default function handle(app: express.Express) {
       }
     }
 
-    await service.createUser(userId, username, new Date());
+    await service.createUser(
+      userId,
+      username,
+      config.regPoint,
+      config.regCoin,
+      new Date()
+    );
 
     resData = {};
     res.json(resData);

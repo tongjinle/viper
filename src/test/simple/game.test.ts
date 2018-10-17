@@ -28,7 +28,7 @@ describe("game", () => {
       .insertMany([
         { index: 1, status: 1 },
         { index: 2, status: 1 },
-        { index: 3, status: 0 }
+        { index: 3, status: 0, rule: { endTime: new Date(9999, 1, 1) } }
       ]);
 
     let data = await gaService.currentIndex();

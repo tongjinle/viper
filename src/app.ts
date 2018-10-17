@@ -8,12 +8,15 @@ import * as path from "path";
 import loger from "./logIns";
 import config from "./config";
 
+import * as mongo from "mongodb";
+
 import httpRouteHandle from "./routes/httpRoute";
 import Database from "./db";
 
 class Main {
+  // express实例
   app: express.Express;
-  server: Http.Server;
+
   constructor() {
     let app = (this.app = express());
 

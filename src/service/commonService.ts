@@ -18,10 +18,12 @@ export default class CommonService {
   async createUser(
     userId: string,
     username: string,
+    point: number,
+    coin: number,
     time: Date
   ): Promise<void> {
     await CommonService.db
       .getCollection("user")
-      .insertOne({ userId, username, time, point: 1, coin: 0 });
+      .insertOne({ userId, username, time, point, coin });
   }
 }

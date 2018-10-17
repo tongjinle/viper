@@ -28,5 +28,10 @@ export default {
   // 每日签到最大次数
   signCount: 1,
   // 每日转发最大次数
-  inviteCount: 10
+  inviteCount: 10,
+
+  // 注册获得的point
+  regPoint: 1,
+  // 注册获得的coin
+  regCoin: 0
 };

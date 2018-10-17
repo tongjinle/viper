@@ -41,6 +41,11 @@ interface IConfig {
   // 每日转发最大次数
   inviteCount: number;
 
+  // 注册获得的point
+  regPoint: number;
+  // 注册获得的coin
+  regCoin: number;
+
   // mock
   mockToken: string;
   mockOpenId: string;

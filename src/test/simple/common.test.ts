@@ -1,17 +1,14 @@
 import assert = require("assert");
 import Database from "../../db";
 import CommonService from "../../service/commonService";
+import helper from "../helper";
 
 describe("common", () => {
   let db: Database;
   let coService: CommonService;
 
   let clearAll = async () => {
-    await Promise.all(
-      ["user", "upvote", "list", "reward"].map(async n => {
-        await db.getCollection(n).deleteMany({});
-      })
-    );
+    await helper.clearAll();
   };
 
   before(async () => {
@@ -32,7 +29,7 @@ describe("common", () => {
   it("createUser", async () => {
     await db.getCollection("user").insertOne({});
 
-    await coService.createUser("zst", "zst", new Date());
+    await coService.createUser("zst", "zst", 0, 0, new Date());
 
     let data = await db.getCollection("user").findOne({ userId: "zst" });
     assert(

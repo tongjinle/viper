@@ -67,6 +67,6 @@ async function test() {
 }
 
 let client = new RedisDb();
-test();
+// test();
 
 export default client;
