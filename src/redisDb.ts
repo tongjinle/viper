@@ -1,10 +1,9 @@
 import * as redis from "redis";
 import { EventEmitter } from "events";
 import { promisify } from "util";
-import { resolve } from "path";
+import config from "./config";
 
-let port = 6379;
-let host = "118.25.212.28";
+let { port, host } = config.redis;
 class RedisDb extends EventEmitter {
   db: redis.RedisClient;
 
@@ -42,6 +41,81 @@ class RedisDb extends EventEmitter {
     });
   }
 
+  hgetall(key: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.db.hgetall(key, (err, data) => {
+        console.log(err, data);
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(data);
+      });
+    });
+  }
+
+  hmset(key: string, obj: {}): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.hmset(key, obj, (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(true);
+      });
+    });
+  }
+
+  exists(key: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.exists(key, (err, num) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(num === 1);
+      });
+    });
+  }
+
+  expire(key: string, ts: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.expire(key, ts, (err, num) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(num === 1);
+      });
+    });
+  }
+
+  // 查找keys
+  keys(pattern: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.db.keys(pattern, (err, keys) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(keys);
+      });
+    });
+  }
+
+  // 删除key
+  del(keys: string[]): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.del(...keys, (err, num) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(num === 1);
+      });
+    });
+  }
+
   close(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.db.end(true);
@@ -62,7 +136,11 @@ async function test() {
   console.log({ value });
 
   await ins.set("number2", parseFloat(value) + 5 + "");
-
+  {
+    await ins.hmset("person", { name: "zst", birth: 2002 });
+    let value = await ins.hgetall("person");
+    console.log("zst", value);
+  }
   ins.close();
 }
 

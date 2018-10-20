@@ -49,6 +49,16 @@ interface IConfig {
   // mock
   mockToken: string;
   mockOpenId: string;
+
+  // redis
+  redis: {
+    // 主机
+    host: string;
+    // 端口
+    port: number;
+    // 密码
+    pass: string;
+  };
 }
 
 let conf: Partial<IConfig> = {};

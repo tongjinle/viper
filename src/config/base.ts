@@ -33,5 +33,12 @@ export default {
   // 注册获得的point
   regPoint: 1,
   // 注册获得的coin
-  regCoin: 0
+  regCoin: 0,
+
+  // redis
+  redis: {
+    host: "localhost",
+    port: 6379,
+    pass: ""
+  }
 };

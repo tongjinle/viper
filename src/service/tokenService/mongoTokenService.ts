@@ -1,20 +1,18 @@
-import config from "../config";
-import Database from "../db";
+import config from "../../config";
+import Database from "../../db";
 import * as mongodb from "mongodb";
+import IToken from "./IToken";
+import ITokenService from "./ITokenService";
 
-interface IToken {
-  token: string;
-  openId: string;
-  expires: number;
-}
-
-export default class TokenService {
+class MongoTokenService implements ITokenService {
   private coll: mongodb.Collection;
 
-  private static ins: TokenService;
+  private static ins: MongoTokenService;
 
-  static async getIns(): Promise<TokenService> {
-    let ins = (TokenService.ins = TokenService.ins || new TokenService());
+  static async getIns(): Promise<MongoTokenService> {
+    console.log("sdddsfa");
+    let ins = (MongoTokenService.ins =
+      MongoTokenService.ins || new MongoTokenService());
     let db = await Database.getIns();
     ins.coll = db.getCollection("token");
     return ins;
@@ -41,7 +39,7 @@ export default class TokenService {
   }
 
   // 绑定openId,生成token
-  async bind(openId: string): Promise<{ token: string; expires: number }> {
+  async bind(openId: string): Promise<IToken> {
     const maxAge = config.tokenExpires;
     let expires = Date.now() + maxAge;
 
@@ -54,7 +52,7 @@ export default class TokenService {
       if (data) {
         let expires = Date.now() + maxAge;
         await this.coll.findOneAndUpdate({ openId }, { $set: { expires } });
-        return { token: data.token, expires };
+        return { openId, token: data.token, expires };
       }
     }
     // 创建token
@@ -62,7 +60,7 @@ export default class TokenService {
       .toString(16)
       .slice(0, 8);
     await this.coll.insertOne({ token, openId, expires });
-    return { token, expires };
+    return { openId, token, expires };
   }
 
   // 清空
@@ -70,3 +68,5 @@ export default class TokenService {
     await this.coll.deleteMany({});
   }
 }
+
+export default MongoTokenService;

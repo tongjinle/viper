@@ -32,7 +32,8 @@ export default function handle(app: express.Express) {
         let err = await service.canCreateUser(openId);
         if (!err) {
           let service = await CommonService.getIns();
-          await service.createUser(openId, "", new Date());
+          let { regCoin, regPoint } = config;
+          await service.createUser(openId, "", regPoint, regCoin, new Date());
         }
       }
     }
