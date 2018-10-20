@@ -8,22 +8,52 @@ let service: ITokenService;
 
 describe("redis-token", () => {
   before(async () => {
-    console.log("before");
     service = await TokenService.getIns();
   });
 
   beforeEach(async () => {
-    console.log("beforeEach");
     await service.clear();
+  });
+
+  after(async () => {
+    await redisClient.close();
   });
 
   it("bind", async () => {
     let openId = "zst";
     let key = "openId#" + openId;
     let info: IToken = await service.bind(openId);
-    console.log(info);
 
-    // let info: IToken = await redisClient.hgetall(key);
-    // assert(info.openId === openId);
+    let token = info.token;
+
+    {
+      let key = "token#" + token;
+      let info: IToken = await redisClient.hgetall(key);
+      assert(info.openId === openId);
+    }
+  });
+
+  it("check", async () => {
+    let openId = "zst";
+    let key = "openId#" + openId;
+
+    let info: IToken = await service.bind(openId);
+
+    {
+      let isExists = await service.check(info.token);
+      assert(isExists === true);
+    }
+  });
+
+  it("getInfoByOpenId", async () => {
+    let openId = "zst";
+    let key = "openId#" + openId;
+
+    let info: IToken = await service.bind(openId);
+
+    {
+      let info = await service.getInfoByOpenId(openId);
+      assert(info.openId === openId);
+    }
   });
 });

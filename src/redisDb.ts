@@ -118,11 +118,13 @@ class RedisDb extends EventEmitter {
 
   close(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.db.end(true);
-      this.db.on("end", () => {
-        console.log("redis client close");
-        resolve(true);
-      });
+      // this.db.end(true);
+      // this.db.on("end", () => {
+      //   console.log("redis client close");
+      //   resolve(true);
+      // });
+      this.db.quit();
+      resolve(true);
     });
   }
 }

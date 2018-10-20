@@ -11,10 +11,8 @@ class RedisTokenService implements ITokenService {
   private static ins: RedisTokenService;
 
   static async getIns(): Promise<RedisTokenService> {
-    console.log("123123213");
     let ins = (RedisTokenService.ins =
       RedisTokenService.ins || new RedisTokenService());
-    console.log(ins);
     return ins;
   }
 
@@ -63,6 +61,8 @@ class RedisTokenService implements ITokenService {
     }
     await redisClient.expire(wrapOpenIdKey(openId), config.tokenExpires);
     await redisClient.expire(wrapTokenKey(info.token), config.tokenExpires);
+
+    rst = info;
     return rst;
   }
 
@@ -70,7 +70,10 @@ class RedisTokenService implements ITokenService {
   async clear(): Promise<void> {
     let tokenKeys = await redisClient.keys("token#*");
     let openIdKeys = await redisClient.keys("openId#*");
-    await redisClient.del([...tokenKeys, ...openIdKeys]);
+    let keys = [...tokenKeys, ...openIdKeys];
+    if (keys.length) {
+      await redisClient.del(keys);
+    }
   }
 }
 

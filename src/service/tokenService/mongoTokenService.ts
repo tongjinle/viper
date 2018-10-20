@@ -10,7 +10,6 @@ class MongoTokenService implements ITokenService {
   private static ins: MongoTokenService;
 
   static async getIns(): Promise<MongoTokenService> {
-    console.log("sdddsfa");
     let ins = (MongoTokenService.ins =
       MongoTokenService.ins || new MongoTokenService());
     let db = await Database.getIns();
