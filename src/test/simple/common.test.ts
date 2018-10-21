@@ -23,14 +23,12 @@ describe("common", () => {
   afterEach(async () => {});
 
   after(async () => {
-    await db.close();
+    await helper.close();
   });
 
   it("createUser", async () => {
     await db.getCollection("user").insertOne({});
-
     await coService.createUser("zst", "zst", 0, 0, new Date());
-
     let data = await db.getCollection("user").findOne({ userId: "zst" });
     assert(
       data && data.userId === "zst" && data.point === 0 && data.coin === 0

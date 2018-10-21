@@ -7,12 +7,18 @@ let { port, host } = config.redis;
 class RedisDb extends EventEmitter {
   db: redis.RedisClient;
 
-  constructor() {
+  private static ins: RedisDb;
+
+  static async getIns(): Promise<RedisDb> {
+    return (RedisDb.ins = RedisDb.ins || new RedisDb());
+  }
+
+  private constructor() {
     super();
     this.db = redis.createClient(port, host);
     this.db.on("connect", () => {
       console.log("redis client connect");
-      this.emit("connent");
+      this.emit("connect");
     });
   }
 
@@ -129,24 +135,4 @@ class RedisDb extends EventEmitter {
   }
 }
 
-async function test() {
-  let ins = client;
-  let isSetSuccess = await ins.set("number", Math.random().toString());
-  console.log({ isSetSuccess });
-
-  let value = await ins.get("number");
-  console.log({ value });
-
-  await ins.set("number2", parseFloat(value) + 5 + "");
-  {
-    await ins.hmset("person", { name: "zst", birth: 2002 });
-    let value = await ins.hgetall("person");
-    console.log("zst", value);
-  }
-  ins.close();
-}
-
-let client = new RedisDb();
-// test();
-
-export default client;
+export default RedisDb;

@@ -2,8 +2,10 @@ import Database from "../db";
 import TokenService from "../service/tokenService";
 import axios from "axios";
 import config from "../config";
+import RedisDb from "../redisDb";
 
 let db: Database;
+let redisDb: RedisDb;
 let clearAll = async () => {
   await open();
   await Promise.all(
@@ -20,10 +22,12 @@ let clearToken = async () => {
 
 let open = async () => {
   db = await Database.getIns();
+  redisDb = await RedisDb.getIns();
 };
 
 let close = async () => {
   await db.close();
+  await redisDb.close();
 };
 
 let getAxios = async () => {

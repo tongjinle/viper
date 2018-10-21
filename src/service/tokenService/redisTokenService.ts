@@ -1,4 +1,4 @@
-import redisClient from "../../redisDb";
+import RedisDb from "../../redisDb";
 import config from "../../config";
 import IToken from "./IToken";
 import ITokenService from "./ITokenService";
@@ -9,23 +9,31 @@ const wrapOpenIdKey = key => "openId#" + key;
 
 class RedisTokenService implements ITokenService {
   private static ins: RedisTokenService;
+  private db: RedisDb;
 
   static async getIns(): Promise<RedisTokenService> {
     let ins = (RedisTokenService.ins =
       RedisTokenService.ins || new RedisTokenService());
+
     return ins;
+  }
+
+  private constructor() {
+    RedisDb.getIns().then(db => {
+      this.db = db;
+    });
   }
 
   // 查找token对应的信息
   async getInfo(token: string): Promise<IToken> {
     let rst: IToken;
-    rst = await redisClient.hgetall(wrapTokenKey(token));
+    rst = await this.db.hgetall(wrapTokenKey(token));
     return rst;
   }
 
   async getInfoByOpenId(openId: string): Promise<IToken> {
     let rst: IToken;
-    let token: string = await redisClient.get(wrapOpenIdKey(openId));
+    let token: string = await this.db.get(wrapOpenIdKey(openId));
     if (!token) {
       return;
     }
@@ -39,7 +47,7 @@ class RedisTokenService implements ITokenService {
   // 在redis中,因为有expires
   async check(token: string): Promise<boolean> {
     let rst: boolean;
-    rst = await redisClient.exists("token#" + token);
+    rst = await this.db.exists("token#" + token);
     return rst;
   }
 
@@ -56,11 +64,11 @@ class RedisTokenService implements ITokenService {
         openId,
         expires: Date.now() + config.tokenExpires
       };
-      await redisClient.hmset(wrapTokenKey(token), info);
-      await redisClient.set(wrapOpenIdKey(openId), token);
+      await this.db.hmset(wrapTokenKey(token), info);
+      await this.db.set(wrapOpenIdKey(openId), token);
     }
-    await redisClient.expire(wrapOpenIdKey(openId), config.tokenExpires);
-    await redisClient.expire(wrapTokenKey(info.token), config.tokenExpires);
+    await this.db.expire(wrapOpenIdKey(openId), config.tokenExpires);
+    await this.db.expire(wrapTokenKey(info.token), config.tokenExpires);
 
     rst = info;
     return rst;
@@ -68,11 +76,11 @@ class RedisTokenService implements ITokenService {
 
   // 清空
   async clear(): Promise<void> {
-    let tokenKeys = await redisClient.keys("token#*");
-    let openIdKeys = await redisClient.keys("openId#*");
+    let tokenKeys = await this.db.keys("token#*");
+    let openIdKeys = await this.db.keys("openId#*");
     let keys = [...tokenKeys, ...openIdKeys];
     if (keys.length) {
-      await redisClient.del(keys);
+      await this.db.del(keys);
     }
   }
 }

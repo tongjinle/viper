@@ -19,7 +19,7 @@ describe("game", () => {
   afterEach(async () => {});
 
   after(async () => {
-    await db.close();
+    await helper.close();
   });
 
   it("currentIndex", async () => {
