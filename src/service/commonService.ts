@@ -1,17 +1,29 @@
 import config from "../config";
-import Database from "../db";
+import MongoDb from "../db";
+import RedisDb from "../redisDb";
+import * as keys from "../redisKeys";
 import * as mongodb from "mongodb";
 
 export default class CommonService {
   private static ins: CommonService;
-  private static db: Database;
+  private mongoDb: MongoDb;
+  private redisDb: RedisDb;
 
   static async getIns(): Promise<CommonService> {
     if (!CommonService.ins) {
       CommonService.ins = new CommonService();
-      CommonService.db = await Database.getIns();
     }
     return CommonService.ins;
+  }
+
+  constructor() {
+    MongoDb.getIns().then(db => {
+      this.mongoDb = db;
+    });
+
+    RedisDb.getIns().then(db => {
+      this.redisDb = db;
+    });
   }
 
   // create user
@@ -22,8 +34,17 @@ export default class CommonService {
     coin: number,
     time: Date
   ): Promise<void> {
-    await CommonService.db
-      .getCollection("user")
-      .insertOne({ userId, username, time, point, coin });
+    let info = { userId, username, time, point, coin };
+    // mongoDb
+    this.mongoDb.getCollection("user").insertOne(info);
+
+    // redisDb
+    await this.redisDb.hmset(keys.user(userId), {
+      userId,
+      username,
+      time: time.getTime(),
+      point,
+      coin
+    });
   }
 }

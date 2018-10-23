@@ -1,14 +1,18 @@
 import assert = require("assert");
-import Database from "../../db";
+import MongoDb from "../../db";
+import RedisDb from "../../redisDb";
+import * as keys from "../../redisKeys";
 import GameService from "../../service/gameService";
 import helper from "../helper";
 
 describe("game", () => {
-  let db: Database;
+  let mongoDb: MongoDb;
+  let redisDb: RedisDb;
   let gaService: GameService;
 
   before(async () => {
-    db = await Database.getIns();
+    mongoDb = await MongoDb.getIns();
+    redisDb = await RedisDb.getIns();
     gaService = await GameService.getIns();
   });
 
@@ -23,7 +27,7 @@ describe("game", () => {
   });
 
   it("currentIndex", async () => {
-    await db
+    await mongoDb
       .getCollection("reward")
       .insertMany([
         { index: 1, status: 1 },
@@ -37,7 +41,7 @@ describe("game", () => {
 
   it("reward", async () => {
     // index, winnerId, upvoterId, reward.desc, reward.photoList, reward.value
-    await db
+    await mongoDb
       .getCollection("reward")
       .insertMany([
         { index: 1, winnerId: "zst" },
@@ -46,19 +50,19 @@ describe("game", () => {
       ]);
     {
       let data = await gaService.reward(2);
-      assert(data.index === 2 && data.winnerId === "zst");
+      assert(data.index === "2" && data.winnerId === "zst");
     }
     {
       let data = await gaService.reward(3);
-      assert(data.index === 3 && !data.winnerId);
+      assert(data.index === "3" && !data.winnerId);
     }
   });
 
   it("upvote", async () => {
-    await db
+    await mongoDb
       .getCollection("user")
       .insertOne({ userId: "tong", username: "tong", point: 100 });
-    await db.getCollection("list").insertMany([
+    await mongoDb.getCollection("list").insertMany([
       {
         index: 1,
         userId: "zst",
@@ -77,31 +81,61 @@ describe("game", () => {
 
     await gaService.upvote(1, "zst", "tong", "point", 10, 1, new Date());
 
-    let usData = await db.getCollection("user").findOne({ userId: "tong" });
-    assert(usData && usData.point === 90);
+    // redis test
+    {
+      let usData = await redisDb.hgetall(keys.user("tong"));
+      assert(usData && parseInt(usData.point) === 90);
 
-    let liData = await db.getCollection("list").findOne({ userId: "zst" });
-    assert(liData && liData.count === 101);
+      let upData = await redisDb.hgetall(keys.uper(1, "zst"));
+      assert(upData && parseInt(upData.count) === 101);
+    }
+    // mongo test
+    {
+      await helper.delay();
 
-    let upData = await db
-      .getCollection("upvote")
-      .findOne({ upvoterId: "tong" });
-    assert(upData && upData.type === "point" && upData.cast === 10);
+      let usData = await mongoDb
+        .getCollection("user")
+        .findOne({ userId: "tong" });
+      assert(usData && usData.point === 90);
+
+      let liData = await mongoDb
+        .getCollection("list")
+        .findOne({ userId: "zst" });
+      assert(liData && liData.count === 101);
+
+      let upData = await mongoDb
+        .getCollection("upvote")
+        .findOne({ upvoterId: "tong" });
+      assert(upData && upData.type === "point" && upData.cast === 10);
+    }
   });
 
   it("addPoint", async () => {
-    await db
+    await mongoDb
       .getCollection("user")
       .insertOne({ userId: "tong", username: "tong", point: 100 });
 
     await gaService.addPoint("tong", 10, 0, new Date());
 
-    let data = await db.getCollection("user").findOne({ userId: "tong" });
-    assert(data && data.point === 110);
+    // redis test
+    {
+      let usData = await redisDb.hgetall(keys.user("tong"));
+      assert(usData && parseInt(usData.point) === 110);
+    }
+
+    // mongo test
+    {
+      await helper.delay();
+
+      let data = await mongoDb
+        .getCollection("user")
+        .findOne({ userId: "tong" });
+      assert(data && data.point === 110);
+    }
   });
 
   it("myUpvote", async () => {
-    await db
+    await mongoDb
       .getCollection("upvote")
       .insertMany([
         { index: 1, userId: "zst", upvoterId: "tong", count: 1 },
@@ -119,7 +153,7 @@ describe("game", () => {
   });
 
   it("myPoint", async () => {
-    await db
+    await mongoDb
       .getCollection("user")
       .insertOne({ userId: "tong", username: "tong", point: 100, coin: 200 });
 
@@ -129,7 +163,7 @@ describe("game", () => {
 
   it("list", async () => {
     // insert data
-    await db.getCollection("list").insertMany([
+    await mongoDb.getCollection("list").insertMany([
       {
         index: 1,
         userId: "zst",

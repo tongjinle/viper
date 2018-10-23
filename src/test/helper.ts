@@ -13,6 +13,14 @@ let clearAll = async () => {
       await db.getCollection(n).deleteMany({});
     })
   );
+
+  // redis
+  {
+    let service = await RedisDb.getIns();
+    let keys = await service.keys("*");
+    // console.log({ keys });
+    await service.del(keys);
+  }
 };
 
 let clearToken = async () => {
@@ -40,6 +48,16 @@ let getAxios = async () => {
   });
 };
 
+// 延迟函数
+// 默认延迟500ms
+let delay = (ms: number = 500) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+};
+
 export default {
   clearAll,
   open,
@@ -50,5 +68,7 @@ export default {
   getAxios,
 
   // clean token
-  clearToken
+  clearToken,
+
+  delay
 };

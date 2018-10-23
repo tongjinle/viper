@@ -8,6 +8,7 @@ import { Db } from "mongodb";
 import Database from "../db";
 import CheckService from "../service/checkService";
 import MemoryService from "../service/memoryService";
+import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from "constants";
 
 export default function handle(app: express.Express) {
   app.get("/game/currentIndex", async (req, res) => {
@@ -106,17 +107,23 @@ export default function handle(app: express.Express) {
     let { point, coin } = utils.calPoint(type, cast);
     let time = new Date();
 
-    let err = await service.canAddPoint(userId, type);
+    let err;
+    {
+      let service = await CheckService.getIns();
+      let day = utils.getTodayString();
+      err = await service.canAddPoint(userId, day, type);
+    }
     if (err) {
       res.json(err);
       return;
     }
+
     {
-      let service = await MemoryService.getIns();
+      let day: string = utils.getTodayString();
       if (type === "sign") {
-        await service.write(userId + "addPoint.sign", 1);
+        await service.recordSign(userId, day);
       } else if (type === "invite") {
-        await service.write(userId + "addPoint.invite", 1);
+        await service.recordInvite(userId, day);
       }
     }
 

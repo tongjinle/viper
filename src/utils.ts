@@ -33,6 +33,33 @@ let utils = {
     let now = new Date();
     now.setHours(0, 0, 0, 0);
     return now.getTime();
+  },
+  getTodayString(): string {
+    let now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("-");
+  },
+
+  // flat object
+  flatObject(obj: object): object {
+    let rst: any = {};
+    let fn = (obj, key, value) => {
+      if (Array.isArray(value)) {
+        value.forEach((n, index) => {
+          let newKey = [key, index].join(".").replace(/^\./g, "");
+          fn(obj, newKey, n);
+        });
+      } else if (typeof value === "object") {
+        for (let key2 in value) {
+          let newKey = [key, key2].join(".").replace(/^\./g, "");
+          fn(obj, newKey, value[key2]);
+        }
+      } else {
+        obj[key] = value;
+      }
+    };
+    fn(rst, "", obj);
+    return rst;
   }
 };
 

@@ -1,33 +1,50 @@
-import config from "../config";
-import Database from "../db";
+import MongoDb from "../db";
 import { ErrCode, IErr } from "../errCode";
-import { Db } from "mongodb";
+import RedisDb from "../redisDb";
+import * as keys from "../redisKeys";
+import CacheService from "./cacheService";
+import config from "../config";
 
 export default class CheckService {
   private static ins: CheckService;
-  private static db: Database;
+  private mongoDb: MongoDb;
+  private redisDb: RedisDb;
 
   static async getIns(): Promise<CheckService> {
     if (!CheckService.ins) {
       CheckService.ins = new CheckService();
-      CheckService.db = await Database.getIns();
     }
     return CheckService.ins;
   }
 
-  // create user
-  async canCreateUser(userId: string): Promise<IErr> {
-    let rst: IErr;
-    rst = await this.isUserExists(userId);
-    return rst;
+  constructor() {
+    MongoDb.getIns().then(db => {
+      this.mongoDb = db;
+    });
+
+    RedisDb.getIns().then(db => {
+      this.redisDb = db;
+    });
   }
 
-  async isUserExists(userId: string): Promise<IErr> {
+  // 能否创建一个user
+  // userId是唯一的
+  async canCreateUser(userId: string): Promise<IErr> {
     let rst: IErr;
-    if (await CheckService.db.getCollection("user").findOne({ userId })) {
+    let user = this.findUser(userId);
+    if (user) {
       rst = ErrCode.userExists;
     }
     return rst;
+  }
+
+  // 获取用户信息
+  async findUser(userId: string): Promise<any> {
+    // 缓存用户
+    await this.cacheUser(userId);
+
+    let key = keys.user(userId);
+    return await this.redisDb.hgetall(key);
   }
 
   // username正则检验
@@ -77,11 +94,17 @@ export default class CheckService {
 
   // 检测up主是否存在
   async checkUperIdExists(index: number, userId: string): Promise<IErr> {
-    let uper = await CheckService.db.getCollection("list").findOne({
-      index,
-      userId
-    });
-    console.log(uper);
+    let uper;
+    // uper= await this.mongoDb.getCollection("list").findOne({
+    //   index,
+    //   userId
+    // });
+
+    let key: string = keys.uper(index, userId);
+    uper = await this.redisDb.hgetall(key);
+
+    // console.log(uper);
+
     if (!uper) {
       return ErrCode.invalidUperId;
     }
@@ -89,12 +112,16 @@ export default class CheckService {
 
   // 检测打榜的用户是否存在
   async checkUpvoterIdExists(userId: string): Promise<IErr> {
-    let upvoter = await CheckService.db
-      .getCollection("user")
-      .findOne({ userId });
-    if (!upvoter) {
-      return ErrCode.invalidUpvoterId;
+    let rst: IErr;
+    let user = this.findUser(userId);
+    if (!user) {
+      rst = ErrCode.invalidUperId;
     }
+    return rst;
+    // let upvoter = await this.mongoDb.getCollection("user").findOne({ userId });
+    // if (!upvoter) {
+    //   return ErrCode.invalidUpvoterId;
+    // }
   }
 
   // 检测是否是合法的打榜
@@ -114,12 +141,43 @@ export default class CheckService {
     userId?: string,
     cast?: number
   ): Promise<IErr> {
-    let upvoter = await CheckService.db
-      .getCollection("user")
-      .findOne({ userId });
-    console.log(upvoter, cast);
-    if (type === "point" && upvoter.point < cast) {
+    let user = await this.findUser(userId);
+    // let upvoter = await this.mongoDb.getCollection("user").findOne({ userId });
+    if (type === "point" && user.point < cast) {
       return ErrCode.notEnoughPoint;
     }
+  }
+
+  // 是否可以增加point
+  // sign 签到
+  // invite 转发
+  async canAddPoint(
+    userId: string,
+    day: string,
+    type: "sign" | "money" | "invite"
+  ): Promise<IErr> {
+    let rst: IErr;
+
+    if ("sign" === type) {
+      let isExists = await this.redisDb.exists(keys.userSign(userId, day));
+      if (isExists) {
+        rst = ErrCode.signAgain;
+      }
+    } else if ("invite" === type) {
+      let count: number = parseInt(
+        await this.redisDb.get(keys.userInvite(userId, day))
+      );
+
+      if (count && count > config.inviteCount) {
+        rst = ErrCode.inviteTooMuch;
+      }
+    }
+
+    return rst;
+  }
+
+  private async cacheUser(userId: string) {
+    let service = await CacheService.getIns();
+    await service.cacheUser(userId);
   }
 }
