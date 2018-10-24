@@ -9,7 +9,7 @@ import utils from "../../utils";
 
 let mockOpenId = config.mockOpenId;
 
-describe("common.handle", () => {
+describe("game.handle", () => {
   let db: Database;
   let request: AxiosInstance;
   before(async () => {
@@ -48,14 +48,17 @@ describe("common.handle", () => {
   it("upvote", async () => {
     await db.getCollection("reward").insertOne({
       index: 1,
-      status: 0
+      status: 0,
+      rule: {
+        endTime: new Date(9999, 1, 1)
+      }
     });
 
     await db
       .getCollection("list")
       .insertMany([
-        { index: 1, userId: "zst", username: "zst" },
-        { index: 1, userId: "xiao", username: "xiao" }
+        { index: 1, userId: "zst", username: "zst", count: 0 },
+        { index: 1, userId: "xiao", username: "xiao", count: 0 }
       ]);
 
     await db.getCollection("user").insertMany([
@@ -98,7 +101,10 @@ describe("common.handle", () => {
   it("upvote-invalidUperId", async () => {
     await db.getCollection("reward").insertOne({
       index: 1,
-      status: 0
+      status: 0,
+      rule: {
+        endTime: new Date(9999, 1, 1)
+      }
     });
 
     await db
@@ -130,17 +136,20 @@ describe("common.handle", () => {
   });
 
   // 不存在的upvoter
-  it("upvote-invalidUpvoterId", async () => {
+  xit("upvote-invalidUpvoterId", async () => {
     await db.getCollection("reward").insertOne({
       index: 1,
-      status: 0
+      status: 0,
+      rule: {
+        endTime: new Date(9999, 1, 1)
+      }
     });
 
     await db
       .getCollection("list")
       .insertMany([
-        { index: 1, userId: "zst", username: "zst" },
-        { index: 1, userId: "xiao", username: "xiao" }
+        { index: 1, userId: "zst", username: "zst", count: 0 },
+        { index: 1, userId: "xiao", username: "xiao", count: 0 }
       ]);
 
     await db.getCollection("user").insertMany([
@@ -168,7 +177,10 @@ describe("common.handle", () => {
   it("upvote-invalidUpvoteType", async () => {
     await db.getCollection("reward").insertOne({
       index: 1,
-      status: 0
+      status: 0,
+      rule: {
+        endTime: new Date(9999, 1, 1)
+      }
     });
 
     await db
@@ -203,7 +215,10 @@ describe("common.handle", () => {
   it("upvote-notEnoughPoint", async () => {
     await db.getCollection("reward").insertOne({
       index: 1,
-      status: 0
+      status: 0,
+      rule: {
+        endTime: new Date(9999, 1, 1)
+      }
     });
 
     await db
@@ -235,6 +250,13 @@ describe("common.handle", () => {
   });
 
   it("list", async () => {
+    await db.getCollection("reward").insertOne({
+      index: 1,
+      status: 0,
+      rule: {
+        endTime: new Date(9999, 1, 1)
+      }
+    });
     await db.getCollection("list").insertMany([
       {
         index: 1,
@@ -313,7 +335,7 @@ describe("common.handle", () => {
       };
 
       assert(res.data.point === 0);
-      assert(res.data.coin === 50);
+      assert(res.data.coin === 5 * config.moneyPointRate);
     }
   });
 

@@ -31,8 +31,9 @@ export default class CheckService {
   // userId是唯一的
   async canCreateUser(userId: string): Promise<IErr> {
     let rst: IErr;
-    let user = this.findUser(userId);
-    if (user) {
+    let user = await this.findUser(userId);
+    console.log("*********", user);
+    if (user && user.__isExists !== "false") {
       rst = ErrCode.userExists;
     }
     return rst;
@@ -44,7 +45,11 @@ export default class CheckService {
     await this.cacheUser(userId);
 
     let key = keys.user(userId);
-    return await this.redisDb.hgetall(key);
+    let usData = await this.redisDb.hgetall(key);
+    if (usData.__isExists === false) {
+      return undefined;
+    }
+    return usData;
   }
 
   // username正则检验
@@ -158,10 +163,16 @@ export default class CheckService {
   ): Promise<IErr> {
     let rst: IErr;
 
+    if (["sign", "money", "invite"].indexOf(type) === -1) {
+      rst = ErrCode.invalidAddPointType;
+      return rst;
+    }
+
     if ("sign" === type) {
       let isExists = await this.redisDb.exists(keys.userSign(userId, day));
       if (isExists) {
         rst = ErrCode.signAgain;
+        return rst;
       }
     } else if ("invite" === type) {
       let count: number = parseInt(
@@ -170,6 +181,7 @@ export default class CheckService {
 
       if (count && count > config.inviteCount) {
         rst = ErrCode.inviteTooMuch;
+        return rst;
       }
     }
 

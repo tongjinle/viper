@@ -17,7 +17,7 @@ let clearAll = async () => {
   // redis
   {
     let service = await RedisDb.getIns();
-    let keys = await service.keys("*");
+    let keys = (await service.keys("*")).filter(n => n.indexOf("token") !== 0);
     // console.log({ keys });
     await service.del(keys);
   }

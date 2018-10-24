@@ -3,22 +3,19 @@ import MongoDb from "../db";
 import RedisDb from "../redisDb";
 import * as keys from "../redisKeys";
 import * as CONSTANT from "../constant";
+import { POINT_CONVERSION_HYBRID } from "constants";
 
 export default class CacheService {
   mongoDb: MongoDb;
   redisDb: RedisDb;
   private static ins;
   static async getIns(): Promise<CacheService> {
-    return (CacheService.ins = CacheService.ins || new CacheService());
-  }
-
-  private constructor() {
-    MongoDb.getIns().then(db => {
-      this.mongoDb = db;
-    });
-    RedisDb.getIns().then(db => {
-      this.redisDb = db;
-    });
+    if (!CacheService.ins) {
+      let ins = (CacheService.ins = new CacheService());
+      ins.mongoDb = await MongoDb.getIns();
+      ins.redisDb = await RedisDb.getIns();
+    }
+    return CacheService.ins;
   }
 
   // 缓存当前的活动届数
@@ -77,7 +74,7 @@ export default class CacheService {
         await this.redisDb.pexpire(keys.uper(index, uper.userId), CONSTANT.DAY);
 
         // 缓存参赛者图片列表
-        for (let j = 0; j < uper.photoList.length; j++) {
+        for (let j = 0; uper.photoList && j < uper.photoList.length; j++) {
           await this.redisDb.sadd(
             keys.uperPhotos(index, uper.userId),
             uper.photoList[j]
@@ -110,6 +107,7 @@ export default class CacheService {
   async cacheUser(userId: string): Promise<void> {
     let key: string = keys.user(userId);
     let isExists: boolean = await this.redisDb.exists(key);
+
     if (!isExists) {
       let data = await this.mongoDb.getCollection("user").findOne({ userId });
       if (data) {

@@ -29,16 +29,8 @@ export default function handler(app: express.Express) {
         res.json(ErrCode.invalidToken);
         return;
       }
-    }
-    next();
-  });
-
-  app.use(async (req, res, next) => {
-    if (/\/game\/|\/common\//.test(req.path)) {
-      let service = await TokenService.getIns();
-      let token: string = req.headers["token"] as string;
       let info = await service.getInfo(token);
-      let openId: string = (req.headers["openId"] = info.openId);
+      req.headers["openId"] = info.openId;
     }
     next();
   });
