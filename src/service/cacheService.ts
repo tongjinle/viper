@@ -42,13 +42,15 @@ export default class CacheService {
     if (!isCache) {
       let data = await this.mongoDb.getCollection("reward").findOne({ index });
       if (data) {
-        // 处理_id
         data._id = data._id.toString();
+       
       } else {
         data = { index, __isExists: false };
       }
-      await this.redisDb.hmset(key, data);
+      await this.redisDb.set(key, JSON.stringify(data));
       await this.redisDb.pexpire(key, CONSTANT.DAY);
+
+
     }
   }
 
@@ -66,7 +68,7 @@ export default class CacheService {
         let info = {
           index,
           userId: uper.userId,
-          userName: uper.userName || "",
+          username: uper.username || "",
           count: uper.count
         };
         // 缓存参赛者基本信息

@@ -64,7 +64,7 @@ export default class GameService {
         let info: any = {
           index,
           userId: uper.userId,
-          userName: uper.userName,
+          username: uper.username,
           photoList,
           count: uper.count
         };
@@ -88,7 +88,7 @@ export default class GameService {
     // [index,winnerId,upvoterId,reward.desc,reward.photoList,reward.value]
     // return await this.mongoDb.getCollection("reward").findOne({ index });
     await this.cacheGame(index);
-    return await this.redisDb.hgetall(keys.reward(index));
+    return JSON.parse(await this.redisDb.get(keys.reward(index)));
   }
 
   // 缓存用户数据

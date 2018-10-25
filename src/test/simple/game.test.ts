@@ -50,11 +50,11 @@ describe("game", () => {
       ]);
     {
       let data = await gaService.reward(2);
-      assert(data.index === "2" && data.winnerId === "zst");
+      assert(data.index === 2 && data.winnerId === "zst");
     }
     {
       let data = await gaService.reward(3);
-      assert(data.index === "3" && !data.winnerId);
+      assert(data.index === 3 && !data.winnerId);
     }
   });
 

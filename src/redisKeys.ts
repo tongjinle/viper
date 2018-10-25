@@ -25,4 +25,4 @@ export let uperList = (index: number) => `uperList#${index}`;
 export let uper = (index: number, uperId: string) => `uper#${index}#${uperId}`;
 // 参赛者图片列表
 export let uperPhotos = (index: number, uperId: string) =>
-  `uperPhoto#${index}#${uperId}`;
+  `uperPhotos#${index}#${uperId}`;
