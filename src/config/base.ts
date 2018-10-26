@@ -1,9 +1,15 @@
 import { HOUR } from "../constant";
 export default {
   port: 3000,
+  // mongo
   connectStr: "mongodb://localhost:27017",
   dbName: "zst",
-
+  // redis
+  redis: {
+    host: "localhost",
+    port: 6379,
+    pass: "sannian"
+  },
   wx: {
     appId: "wxfdb0bd7037208c77",
     appSecret: "f2a1d8b4e348164bf359f14776ec8433",
@@ -33,12 +39,5 @@ export default {
   // 注册获得的point
   regPoint: 1,
   // 注册获得的coin
-  regCoin: 0,
-
-  // redis
-  redis: {
-    host: "localhost",
-    port: 6379,
-    pass: ""
-  }
+  regCoin: 0
 };

@@ -10,7 +10,7 @@ enum eStatus {
   close
 }
 
-let { port, host } = config.redis;
+let { port, host, pass } = config.redis;
 class RedisDb extends EventEmitter {
   db: redis.RedisClient;
   status: eStatus;
@@ -34,7 +34,9 @@ class RedisDb extends EventEmitter {
   }
 
   connect() {
-    this.db = redis.createClient(port, host);
+    this.db = redis.createClient(port, host, {
+      password: pass
+    });
     this.status = eStatus.open;
 
     this.db.once("connect", () => {
