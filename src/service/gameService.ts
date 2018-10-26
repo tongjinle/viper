@@ -3,10 +3,10 @@ import MongoDb from "../db";
 import RedisDb from "../redisDb";
 import * as keys from "../redisKeys";
 import { ErrCode, IErr } from "../errCode";
-import MemoryService from "./memoryService";
 import CacheService from "./cacheService";
 import * as CONSTANT from "../constant";
-import serveStatic = require("serve-static");
+import utils from "../utils";
+
 export default class GameService {
   private static ins: GameService;
   private mongoDb: MongoDb;
@@ -151,18 +151,22 @@ export default class GameService {
   }
 
   // 记录签到
-  async recordSign(userId: string, day: string) {}
+  async recordSign(userId: string, day: string) {
+    await this.redisDb.set(keys.userSign(userId, day), "1");
+  }
 
   // 记录转发(邀请)
-  async recordInvite(userId: string, day: string) {}
+  async recordInvite(userId: string, day: string) {
+    await this.redisDb.incrby(keys.userInvite(userId, day), -1);
+  }
 
   // add point
   async addPoint(userId: string, point: number, coin: number, time: Date) {
     await this.cacheUser(userId);
 
     await this.redisDb.hincrby(keys.user(userId), "point", point);
-    await this.redisDb.hincrby(keys.user(userId), "coint", coin);
 
+    await this.redisDb.hincrby(keys.user(userId), "coin", coin);
     // mongoDb
     this.mongoDb
       .getCollection("user")
@@ -202,4 +206,26 @@ export default class GameService {
       }
     }
   }
+  async myAddPoint(userId: string, date: Date): Promise<IAddPoint> {
+    let rst: IAddPoint;
+
+    let day = utils.getDateString(date);
+
+    {
+      let service = await CacheService.getIns();
+      await service.cacheUserInviteCount(userId, day);
+    }
+
+    let sign = (await this.redisDb.exists(keys.userSign(userId, day))) ? 0 : 1;
+    let invite = parseInt(await this.redisDb.get(keys.userInvite(userId, day)));
+    rst = {
+      sign,
+      invite
+    };
+    return rst;
+  }
+}
+interface IAddPoint {
+  sign: number;
+  invite: number;
 }

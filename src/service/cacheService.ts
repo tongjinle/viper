@@ -3,7 +3,7 @@ import MongoDb from "../db";
 import RedisDb from "../redisDb";
 import * as keys from "../redisKeys";
 import * as CONSTANT from "../constant";
-import { POINT_CONVERSION_HYBRID } from "constants";
+import config from "../config";
 
 export default class CacheService {
   mongoDb: MongoDb;
@@ -43,14 +43,11 @@ export default class CacheService {
       let data = await this.mongoDb.getCollection("reward").findOne({ index });
       if (data) {
         data._id = data._id.toString();
-       
       } else {
         data = { index, __isExists: false };
       }
       await this.redisDb.set(key, JSON.stringify(data));
       await this.redisDb.pexpire(key, CONSTANT.DAY);
-
-
     }
   }
 
@@ -121,6 +118,15 @@ export default class CacheService {
         };
       }
       await this.redisDb.hmset(key, data);
+      await this.redisDb.pexpire(key, CONSTANT.DAY);
+    }
+  }
+
+  // 缓存用户某天的转发次数
+  async cacheUserInviteCount(userId: string, day: string): Promise<void> {
+    let key = keys.userInvite(userId, day);
+    if (!(await this.redisDb.exists(key))) {
+      await this.redisDb.set(key, config.inviteCount.toString());
       await this.redisDb.pexpire(key, CONSTANT.DAY);
     }
   }

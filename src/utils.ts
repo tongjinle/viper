@@ -37,7 +37,11 @@ let utils = {
   getTodayString(): string {
     let now = new Date();
     now.setHours(0, 0, 0, 0);
-    return [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("-");
+    return this.getDateString(now);
+  },
+
+  getDateString(date: Date): string {
+    return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
   },
 
   // flat object

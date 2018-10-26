@@ -67,6 +67,18 @@ class RedisDb extends EventEmitter {
     });
   }
 
+  incrby(key: string, increment: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.db.incrby(key, increment, (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(data);
+      });
+    });
+  }
+
   hgetall(key: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.db.hgetall(key, (err, data) => {
@@ -93,7 +105,7 @@ class RedisDb extends EventEmitter {
     });
   }
 
-  hincrby(key: string, field: string, increment: number) {
+  hincrby(key: string, field: string, increment: number): Promise<number> {
     return new Promise((resolve, reject) => {
       this.db.hincrby(key, field, increment, (err, data) => {
         if (err) {
@@ -179,10 +191,33 @@ class RedisDb extends EventEmitter {
       });
     });
   }
+  expireat(key: string, sec: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.expireat(key, sec, (err, num) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(num === 1);
+      });
+    });
+  }
 
   pexpire(key: string, ms: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.db.pexpire(key, ms, (err, num) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(num === 1);
+      });
+    });
+  }
+
+  pexpireat(key: string, ms: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.pexpireat(key, ms, (err, num) => {
         if (err) {
           reject(err);
           return;
