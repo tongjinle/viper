@@ -157,7 +157,16 @@ export default class GameService {
 
   // 记录转发(邀请)
   async recordInvite(userId: string, day: string) {
+    {
+      let service = await CacheService.getIns();
+      await service.cacheUserInviteCount(userId, day);
+    }
     await this.redisDb.incrby(keys.userInvite(userId, day), -1);
+  }
+
+  // 记录冠军
+  async recordWinner(index: number, userId: string) {
+    await this.redisDb.set(keys.winner(index), userId);
   }
 
   // add point
@@ -223,6 +232,19 @@ export default class GameService {
       invite
     };
     return rst;
+  }
+
+  // 检查是否已经到了临界热度,从而产生了冠军
+  async checkWinner(index: number, userId: string): Promise<void> {
+    {
+      let service = await CacheService.getIns();
+      service.cacheGame(index);
+    }
+
+    let uper = await this.redisDb.hgetall(keys.uper(index, userId));
+    if (uper.count >= config.maxHot) {
+      await this.redisDb.set(keys.winner(index), userId);
+    }
   }
 }
 interface IAddPoint {

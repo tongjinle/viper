@@ -1,4 +1,6 @@
-export default {
+import IConfig from "./IConfig";
+
+let conf: Partial<IConfig> = {
   port: 443,
   apiPrefix: "https://api.puman.xyz",
 
@@ -7,10 +9,9 @@ export default {
 
   // redis
   redis: {
-    redis: {
-      host: "118.31.11.29",
-      port: 6379,
-      pass: "sannian"
-    }
+    host: "118.31.11.29",
+    port: 6379,
+    pass: "sannian"
   }
 };
+export default conf;

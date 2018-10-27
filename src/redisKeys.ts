@@ -26,3 +26,6 @@ export let uper = (index: number, uperId: string) => `uper#${index}#${uperId}`;
 // 参赛者图片列表
 export let uperPhotos = (index: number, uperId: string) =>
   `uperPhotos#${index}#${uperId}`;
+
+// 某届活动的冠军
+export let winner = (index: number) => `winner#${index}`;

@@ -28,4 +28,5 @@ export class ErrCode {
   static notEnoughPoint: IErr = { code: 905, message: "缺乏足够的point" };
   static signAgain: IErr = { code: 906, message: "重复签到" };
   static inviteTooMuch: IErr = { code: 907, message: "转发奖励到达上限" };
+  static hasWinner: IErr = { code: 908, message: "冠军已经产生" };
 }

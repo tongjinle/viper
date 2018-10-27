@@ -8,8 +8,8 @@
 const mongodb = require("mongodb");
 
 // let connectStr = 'mongodb://puman:puman@118.31.11.29:27017/doctor';
-// let connectStr = "mongodb://118.31.11.29:27017/zst";
-let connectStr = "mongodb://localhost:27017/zst";
+let connectStr = "mongodb://118.31.11.29:27017/zst";
+// let connectStr = "mongodb://localhost:27017/zst";
 
 let { MongoClient } = mongodb;
 

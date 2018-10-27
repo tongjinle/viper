@@ -249,6 +249,53 @@ describe("game.handle", () => {
     }
   });
 
+  // upvoter的point不够
+  it("upvote-hasWinner", async () => {
+    await db.getCollection("reward").insertOne({
+      index: 1,
+      status: 0,
+      rule: {
+        endTime: new Date(9999, 1, 1)
+      }
+    });
+
+    await db
+      .getCollection("list")
+      .insertMany([
+        { index: 1, userId: "zst", username: "zst", count: 0 },
+        { index: 1, userId: "xiao", username: "xiao", count: 0 }
+      ]);
+
+    await db.getCollection("user").insertMany([
+      {
+        userId: config.mockOpenId,
+        username: config.mockOpenId,
+        point: 10000,
+        coin: 0
+      }
+    ]);
+
+    // 增加热度到可以决出冠军
+    {
+      let reqData: Protocol.IReqUpvote = {
+        userId: "zst",
+        type: "point",
+        cast: config.maxHot
+      };
+      let res = await request.post("/game/upvote", reqData);
+    }
+    {
+      let reqData: Protocol.IReqUpvote = {
+        userId: "zst",
+        type: "point",
+        cast: 1
+      };
+      let res = await request.post("/game/upvote", reqData);
+
+      assert(res.data.code === ErrCode.hasWinner.code);
+    }
+  });
+
   it("list", async () => {
     await db.getCollection("reward").insertOne({
       index: 1,
@@ -401,11 +448,13 @@ describe("game.handle", () => {
       coin: 200
     });
 
-    await db.getCollection("memory").insertOne({
-      key: config.mockOpenId + "addPoint.invite",
-      ts: utils.getToday(),
-      value: 1
-    });
+    // 转发一次
+    {
+      let reqData: Protocol.IReqAddPoint = {
+        type: "invite"
+      };
+      await request.post("/game/addPoint", reqData);
+    }
 
     let res = (await request.get("/game/myAddPoint")) as {
       data: Protocol.IResMyAddPoint;

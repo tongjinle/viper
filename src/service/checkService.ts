@@ -4,6 +4,7 @@ import RedisDb from "../redisDb";
 import * as keys from "../redisKeys";
 import CacheService from "./cacheService";
 import config from "../config";
+import RedisTokenService from "./tokenService";
 
 export default class CheckService {
   private static ins: CheckService;
@@ -80,7 +81,8 @@ export default class CheckService {
       () => this.checkUperIdExists(index, userId),
       () => this.checkUpvoterIdExists(upvoterId),
       () => this.checkUpvoteType(type, userId, cast),
-      () => this.checkUpvotePoint(type, upvoterId, cast)
+      () => this.checkUpvotePoint(type, upvoterId, cast),
+      () => this.checkHasWinner(index)
     ];
     for (let i = 0; i < arr.length; i++) {
       rst = await arr[i]();
@@ -151,6 +153,16 @@ export default class CheckService {
     if (type === "point" && user.point < cast) {
       return ErrCode.notEnoughPoint;
     }
+  }
+
+  // 检测是否已经产生冠军
+  async checkHasWinner(index: number): Promise<IErr> {
+    let rst: IErr;
+    let isExists: boolean = await this.redisDb.exists(keys.winner(index));
+    if (isExists) {
+      return ErrCode.hasWinner;
+    }
+    return rst;
   }
 
   // 是否可以增加point

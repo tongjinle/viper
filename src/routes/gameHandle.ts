@@ -94,6 +94,9 @@ export default function handle(app: express.Express) {
     let count = utils.calCount(type, cast);
     let time = new Date();
     await service.upvote(index, userId, upvoterId, type, cast, count, time);
+    // 查看是不是已经产生冠军
+    await service.checkWinner(index, userId);
+
     resData = {};
     res.json(resData);
   });

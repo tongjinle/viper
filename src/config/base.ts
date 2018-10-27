@@ -1,5 +1,7 @@
+import IConfig from "./IConfig";
 import { HOUR } from "../constant";
-export default {
+let conf: IConfig = {
+  apiPrefix: "http://localhost",
   port: 3000,
   // mongo
   connectStr: "mongodb://localhost:27017",
@@ -21,7 +23,14 @@ export default {
   tokenExpires: 2 * HOUR,
 
   // ******** special for project ********
+  // 照片打开的临界值
   photoOpen: [0, 0, 0, 100, 300, 1000],
+
+  // 冠军临界热度
+  maxHot: 1000,
+
+  mockToken: "sannian.zst",
+  mockOpenId: "sannian.zst",
 
   pointRate: 1,
   coinRate: 100,
@@ -41,3 +50,5 @@ export default {
   // 注册获得的coin
   regCoin: 0
 };
+
+export default conf;
