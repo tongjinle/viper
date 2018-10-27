@@ -9,7 +9,7 @@ let redisDb: RedisDb;
 let clearAll = async () => {
   await open();
   await Promise.all(
-    ["user", "upvote", "list", "reward", "memory"].map(async n => {
+    ["user", "upvote", "list", "reward", "memory", "token"].map(async n => {
       await db.getCollection(n).deleteMany({});
     })
   );
@@ -17,15 +17,21 @@ let clearAll = async () => {
   // redis
   {
     let service = await RedisDb.getIns();
-    let keys = (await service.keys("*")).filter(n => n.indexOf("token") !== 0);
-    // console.log({ keys });
-    await service.del(keys);
+    await service.flushall();
   }
 };
 
 let clearToken = async () => {
   await open();
   await db.getCollection("token").deleteMany({});
+  // {
+  //   let service = await RedisDb.getIns();
+  //   let keys = [
+  //     ...(await service.keys("token#*")),
+  //     ...(await service.keys("openId#*"))
+  //   ];
+  //   await service.del(keys);
+  // }
 };
 
 let open = async () => {

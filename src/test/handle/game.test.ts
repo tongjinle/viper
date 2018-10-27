@@ -20,7 +20,7 @@ describe("game.handle", () => {
   beforeEach(async () => {
     await helper.clearAll();
     // axios
-    await helper.clearToken();
+    // await helper.clearToken();
     request = await helper.getAxios();
   });
 

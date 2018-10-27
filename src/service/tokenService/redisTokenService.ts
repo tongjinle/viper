@@ -1,4 +1,5 @@
 import RedisDb from "../../redisDb";
+import * as keys from "../../redisKeys";
 import config from "../../config";
 import IToken from "./IToken";
 import ITokenService from "./ITokenService";
@@ -12,28 +13,26 @@ class RedisTokenService implements ITokenService {
   private db: RedisDb;
 
   static async getIns(): Promise<RedisTokenService> {
-    let ins = (RedisTokenService.ins =
-      RedisTokenService.ins || new RedisTokenService());
+    if (!RedisTokenService.ins) {
+      let ins = (RedisTokenService.ins =
+        RedisTokenService.ins || new RedisTokenService());
+      ins.db = await RedisDb.getIns();
+    }
 
-    return ins;
-  }
-
-  private constructor() {
-    RedisDb.getIns().then(db => {
-      this.db = db;
-    });
+    return RedisTokenService.ins;
   }
 
   // 查找token对应的信息
   async getInfo(token: string): Promise<IToken> {
     let rst: IToken;
-    rst = await this.db.hgetall(wrapTokenKey(token));
+    let key = keys.token(token);
+    rst = await this.db.hgetall(key);
     return rst;
   }
 
   async getInfoByOpenId(openId: string): Promise<IToken> {
     let rst: IToken;
-    let token: string = await this.db.get(wrapOpenIdKey(openId));
+    let token: string = await this.db.get(keys.openId(openId));
     if (!token) {
       return;
     }
@@ -47,7 +46,7 @@ class RedisTokenService implements ITokenService {
   // 在redis中,因为有expires
   async check(token: string): Promise<boolean> {
     let rst: boolean;
-    rst = await this.db.exists("token#" + token);
+    rst = await this.db.exists(keys.token(token));
     return rst;
   }
 
@@ -64,11 +63,11 @@ class RedisTokenService implements ITokenService {
         openId,
         expires: Date.now() + config.tokenExpires
       };
-      await this.db.hmset(wrapTokenKey(token), info);
-      await this.db.set(wrapOpenIdKey(openId), token);
+      await this.db.hmset(keys.token(token), info);
+      await this.db.set(keys.openId(openId), token);
     }
-    await this.db.expire(wrapOpenIdKey(openId), config.tokenExpires);
-    await this.db.expire(wrapTokenKey(info.token), config.tokenExpires);
+    await this.db.pexpire(keys.openId(openId), config.tokenExpires);
+    await this.db.pexpire(keys.token(token), config.tokenExpires);
 
     rst = info;
     return rst;

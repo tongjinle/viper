@@ -1,5 +1,8 @@
 // 用户信息
 export let user = (userId: string) => `user#${userId}`;
+// token
+export let token = (token: string) => `token#${token}`;
+export let openId = (openId: string) => `openId#${openId}`;
 
 // 用户签到标记
 export let userSign = (userId: string, day: string) =>

@@ -259,6 +259,18 @@ class RedisDb extends EventEmitter {
     });
   }
 
+  flushall(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.db.flushall((err, num) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    });
+  }
+
   close(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // this.db.end(true);
