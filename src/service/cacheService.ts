@@ -18,6 +18,20 @@ export default class CacheService {
     return CacheService.ins;
   }
 
+  // 标记一个key,表示已经尝试缓存了
+  async flagKey(key: string, expire: number): Promise<void> {
+    await this.redisDb.set(keys.flag(key), "1");
+  }
+
+  // 清除一个标记key
+  async clearFlayKey(key: string): Promise<void> {
+    await this.redisDb.del([key]);
+  }
+
+  async hasFlagKey(key: string): Promise<boolean> {
+    return await this.redisDb.exists(keys.flag(key));
+  }
+
   // 缓存当前的活动届数
   // 缓存时间定为1天
   async cacheCurrentIndex(currentDate: Date = new Date()) {
@@ -38,23 +52,21 @@ export default class CacheService {
   // 缓存时间定为1天
   async cacheReward(index: number) {
     let key: string = keys.reward(index);
-    let isCache: boolean = await this.redisDb.exists(keys.reward(index));
-    if (!isCache) {
+    if (!(await this.hasFlagKey(key))) {
       let data = await this.mongoDb.getCollection("reward").findOne({ index });
       if (data) {
         data._id = data._id.toString();
-      } else {
-        data = { index, __isExists: false };
+        await this.redisDb.set(key, JSON.stringify(data));
+        await this.redisDb.pexpire(key, CONSTANT.DAY);
       }
-      await this.redisDb.set(key, JSON.stringify(data));
-      await this.redisDb.pexpire(key, CONSTANT.DAY);
+      await this.flagKey(keys.flag(key), CONSTANT.DAY);
     }
   }
 
   // 缓存某届所有的参赛者
   async cacheUperList(index: number) {
-    let isCache: boolean = await this.redisDb.exists(keys.uperList(index));
-    if (!isCache) {
+    let key: string = keys.uperList(index);
+    if (!(await this.hasFlagKey(key))) {
       let list = await this.mongoDb
         .getCollection("list")
         .find({ index })
@@ -80,6 +92,8 @@ export default class CacheService {
           );
         }
       }
+
+      this.flagKey(key, CONSTANT.DAY);
     }
   }
 
@@ -105,20 +119,15 @@ export default class CacheService {
   // 缓存时间为1天
   async cacheUser(userId: string): Promise<void> {
     let key: string = keys.user(userId);
-    let isExists: boolean = await this.redisDb.exists(key);
 
-    if (!isExists) {
+    if (!(await this.hasFlagKey(key))) {
       let data = await this.mongoDb.getCollection("user").findOne({ userId });
       if (data) {
         data._id = data._id.toString();
-      } else {
-        data = {
-          userId,
-          __isExists: false
-        };
+        await this.redisDb.hmset(key, data);
+        await this.redisDb.pexpire(key, CONSTANT.DAY);
       }
-      await this.redisDb.hmset(key, data);
-      await this.redisDb.pexpire(key, CONSTANT.DAY);
+      await this.flagKey(key, CONSTANT.DAY);
     }
   }
 

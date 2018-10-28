@@ -5,6 +5,7 @@ import * as keys from "../redisKeys";
 import CacheService from "./cacheService";
 import config from "../config";
 import RedisTokenService from "./tokenService";
+import IUserInfo from "./IUserInfo";
 
 export default class CheckService {
   private static ins: CheckService;
@@ -33,10 +34,19 @@ export default class CheckService {
   async canCreateUser(userId: string): Promise<IErr> {
     let rst: IErr;
     let user = await this.findUser(userId);
-    console.log("*********", user);
-    if (user && user.__isExists !== "false") {
+    if (user) {
       rst = ErrCode.userExists;
     }
+    return rst;
+  }
+
+  // 能否设置用户信息
+  async canSetUserInfo(
+    userId: string,
+    userInfo: Partial<IUserInfo>
+  ): Promise<IErr> {
+    let rst: IErr;
+
     return rst;
   }
 
@@ -46,11 +56,12 @@ export default class CheckService {
     await this.cacheUser(userId);
 
     let key = keys.user(userId);
-    let usData = await this.redisDb.hgetall(key);
-    if (usData.__isExists === false) {
-      return undefined;
+    let service = await CacheService.getIns();
+    if (await service.hasFlagKey(key)) {
+      let usData = await this.redisDb.hgetall(key);
+      return usData;
     }
-    return usData;
+    return;
   }
 
   // username正则检验

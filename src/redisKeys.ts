@@ -1,3 +1,6 @@
+// flag
+export let flag = (key: string) => `flag#${key}`;
+
 // 用户信息
 export let user = (userId: string) => `user#${userId}`;
 // token

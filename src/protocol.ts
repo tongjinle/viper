@@ -27,6 +27,15 @@ export interface IReqCreateUser {
 
 export interface IResCreateUser {}
 
+// 设置用户信息
+export interface IReqSetUserInfo {
+  username?: string;
+  gender?: number;
+  city?: string;
+  logoUrl?: string;
+}
+export interface IResSetUserInfo {}
+
 // current index
 // 返回现在正在进行中的一届比赛
 export interface IReqCurrentIndex {}
