@@ -21,6 +21,7 @@ export default class CacheService {
   // 标记一个key,表示已经尝试缓存了
   async flagKey(key: string, expire: number): Promise<void> {
     await this.redisDb.set(keys.flag(key), "1");
+    await this.redisDb.pexpire(keys.flag(key), expire);
   }
 
   // 清除一个标记key
@@ -59,7 +60,7 @@ export default class CacheService {
         await this.redisDb.set(key, JSON.stringify(data));
         await this.redisDb.pexpire(key, CONSTANT.DAY);
       }
-      await this.flagKey(keys.flag(key), CONSTANT.DAY);
+      await this.flagKey(key, CONSTANT.DAY);
     }
   }
 
@@ -93,7 +94,7 @@ export default class CacheService {
         }
       }
 
-      this.flagKey(key, CONSTANT.DAY);
+      await this.flagKey(key, CONSTANT.DAY);
     }
   }
 
