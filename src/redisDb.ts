@@ -126,7 +126,7 @@ class RedisDb extends EventEmitter {
           reject(err);
           return;
         }
-        resolve(num === 1);
+        resolve(num !== 0);
       });
     });
   }
@@ -151,7 +151,7 @@ class RedisDb extends EventEmitter {
           reject(err);
           return;
         }
-        resolve(num === 1);
+        resolve(num !== 0);
       });
     });
   }
@@ -164,7 +164,7 @@ class RedisDb extends EventEmitter {
           reject(err);
           return;
         }
-        resolve(num === 1);
+        resolve(num !== 0);
       });
     });
   }
@@ -177,7 +177,32 @@ class RedisDb extends EventEmitter {
           reject(err);
           return;
         }
-        resolve(num === 1);
+        resolve(num !== 0);
+      });
+    });
+  }
+
+  // list
+  rpush(key: string, member: string | string[]): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.rpush(key, member, (err, num) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(num !== 0);
+      });
+    });
+  }
+
+  lrange(key: string, start: number, stop: number): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.db.lrange(key, start, stop, (err, values) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(values);
       });
     });
   }
@@ -189,7 +214,7 @@ class RedisDb extends EventEmitter {
           reject(err);
           return;
         }
-        resolve(num === 1);
+        resolve(num !== 0);
       });
     });
   }
@@ -200,7 +225,7 @@ class RedisDb extends EventEmitter {
           reject(err);
           return;
         }
-        resolve(num === 1);
+        resolve(num !== 0);
       });
     });
   }
@@ -212,7 +237,7 @@ class RedisDb extends EventEmitter {
           reject(err);
           return;
         }
-        resolve(num === 1);
+        resolve(num !== 0);
       });
     });
   }
@@ -224,7 +249,7 @@ class RedisDb extends EventEmitter {
           reject(err);
           return;
         }
-        resolve(num === 1);
+        resolve(num !== 0);
       });
     });
   }
@@ -254,7 +279,19 @@ class RedisDb extends EventEmitter {
           reject(err);
           return;
         }
-        resolve(num === 1);
+        resolve(num !== 0);
+      });
+    });
+  }
+
+  type(key: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.db.type(key, (err, typeName) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(typeName);
       });
     });
   }

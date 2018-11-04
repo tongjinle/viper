@@ -1,7 +1,6 @@
 import * as mongodb from "mongodb";
 import config from "./config/index";
 import * as Schema from "./schema";
-
 // 数据库状态
 enum eStatus {
   open,
@@ -38,9 +37,12 @@ export default class Database {
   }
 
   async open() {
-    this.db = await mongodb.MongoClient.connect(this.connectStr, {
-      useNewUrlParser: true
-    });
+    this.db = await mongodb.MongoClient.connect(
+      this.connectStr,
+      {
+        useNewUrlParser: true
+      }
+    );
     this.status = eStatus.open;
     // dbName
     let currDb = (this.currDb = this.db.db(this.dbName));

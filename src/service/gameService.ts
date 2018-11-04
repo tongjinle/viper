@@ -6,6 +6,9 @@ import { ErrCode, IErr } from "../errCode";
 import CacheService from "./cacheService";
 import * as CONSTANT from "../constant";
 import utils from "../utils";
+import IGalleryItem from "./IGalleryItem";
+import serveStatic = require("serve-static");
+import { ObjectId } from "bson";
 
 export default class GameService {
   private static ins: GameService;
@@ -244,6 +247,64 @@ export default class GameService {
     let uper = await this.redisDb.hgetall(keys.uper(index, userId));
     if (uper.count >= config.maxHot) {
       await this.redisDb.set(keys.winner(index), userId);
+    }
+  }
+
+  async gallery(pageIndex: number, pageSize: number): Promise<IGalleryItem[]> {
+    let rst: IGalleryItem[];
+
+    rst = [];
+    // cache gallery
+    let service = await CacheService.getIns();
+    await service.cacheGallery(pageIndex, pageSize);
+
+    let idList: string[] = await this.redisDb.lrange(
+      keys.galleryIdList(),
+      pageIndex * pageSize,
+      pageIndex * pageSize + pageSize - 1
+    );
+    for (let i = 0; i < idList.length; i++) {
+      let key: string = keys.galleryItem(idList[i]);
+      if (await this.redisDb.exists(key)) {
+        let item = JSON.parse(await this.redisDb.get(key));
+        rst.push({
+          id: item._id,
+          // 类型,'图片' | '视频'
+          type: item.type,
+          // 浏览量
+          count: item.count,
+          // 标题
+          title: item.title,
+          // logo图片的url
+          logoUrl: item.logoUrl,
+          // 资源url数组
+          resource: item.resource
+        });
+      }
+    }
+
+    return rst;
+  }
+
+  // gallery浏览量计数
+  async galleryCount(id: string): Promise<void> {
+    // mongo
+    {
+      this.mongoDb
+        .getCollection("gallery")
+        .updateOne({ _id: new ObjectId(id) }, { $inc: { count: 1 } });
+    }
+
+    // redis
+    {
+      // 如果存在才更新
+      let key: string = keys.galleryItem(id);
+      if (!!(await this.redisDb.exists(key))) {
+        let item: any = await this.redisDb.get(key);
+        item = JSON.parse(item);
+        item.count++;
+        await this.redisDb.set(key, JSON.stringify(item));
+      }
     }
   }
 }

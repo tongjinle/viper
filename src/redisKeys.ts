@@ -35,3 +35,13 @@ export let uperPhotos = (index: number, uperId: string) =>
 
 // 某届活动的冠军
 export let winner = (index: number) => `winner#${index}`;
+
+// gallery pageSize
+export let galleryPageSize = () => `galleryPageSize`;
+
+// gallery
+// export let gallery = (index: string) => `gallery#${index}`;
+export let galleryIdList = () => `galleryIdList`;
+
+// gallery item
+export let galleryItem = (id: string) => `galleryItem#${id}`;

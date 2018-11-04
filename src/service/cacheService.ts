@@ -1,9 +1,11 @@
 // redis的缓存服务
+import { ObjectId } from "mongodb";
 import MongoDb from "../db";
 import RedisDb from "../redisDb";
 import * as keys from "../redisKeys";
 import * as CONSTANT from "../constant";
 import config from "../config";
+import IGalleryItem from "./IGalleryItem";
 
 export default class CacheService {
   mongoDb: MongoDb;
@@ -138,6 +140,55 @@ export default class CacheService {
     if (!(await this.redisDb.exists(key))) {
       await this.redisDb.set(key, config.inviteCount.toString());
       await this.redisDb.pexpire(key, CONSTANT.DAY);
+    }
+  }
+
+  // 缓存颜值列表
+  // 策略:
+  // config.galleryExpire为缓存时间
+  // 点赞的计数不直接更新到缓存中,等到
+  async cacheGallery(pageIndex: number, pageSize: number): Promise<void> {
+    // 尝试cache所有gallery的id
+    await this.cacheGalleryIdList();
+
+    // 当前要找的gallery item list
+    let start = pageIndex * pageSize;
+    let stop = pageIndex * pageSize + pageSize;
+    let currIdList = await this.redisDb.lrange(
+      keys.galleryIdList(),
+      start,
+      stop
+    );
+
+    for (let i = 0; i < currIdList.length; i++) {
+      let id = currIdList[i];
+      if (!(await this.redisDb.exists(keys.galleryItem(id)))) {
+        let item = await this.mongoDb
+          .getCollection("gallery")
+          .findOne({ _id: new ObjectId(id) });
+        item._id = item._id.toString();
+        item.date = item.date.getTime();
+
+        await this.redisDb.set(
+          keys.galleryItem(item._id.toString()),
+          JSON.stringify(item)
+        );
+      }
+    }
+  }
+
+  private async cacheGalleryIdList(): Promise<void> {
+    let key: string = keys.galleryIdList();
+
+    if (!(await this.redisDb.exists(key))) {
+      let idList = (await this.mongoDb
+        .getCollection("gallery")
+        .find({})
+        .project({ _id: 1 })
+        .sort({ date: -1 })
+        .toArray()).map(n => n._id.toString());
+
+      await this.redisDb.rpush(key, idList);
     }
   }
 }

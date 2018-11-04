@@ -214,4 +214,93 @@ describe("game", () => {
     assert(data.find(n => n.userId === "zst").photoList.length === 6);
     assert(data.find(n => n.userId === "sannian").photoList.length === 6);
   });
+
+  it("gallery", async () => {
+    await mongoDb.getCollection("gallery").insertMany([
+      {
+        date: new Date(2018, 0, 1),
+        title: "g1",
+        type: "pic",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      },
+      {
+        date: new Date(2017, 0, 1),
+        title: "g2",
+        type: "pic",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      },
+      {
+        date: new Date(2016, 0, 1),
+        title: "g3",
+        type: "video",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      },
+      {
+        date: new Date(2015, 0, 1),
+        title: "g4",
+        type: "pic",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      }
+    ]);
+
+    let service = await GameService.getIns();
+    let data = await service.gallery(0, 3);
+    assert(data.length === 3);
+    assert(data[1].title === "g2");
+  });
+
+  it("galleryCount", async () => {
+    await mongoDb.getCollection("gallery").insertMany([
+      {
+        date: new Date(2018, 0, 1),
+        title: "g1",
+        type: "pic",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      },
+      {
+        date: new Date(2017, 0, 1),
+        title: "g2",
+        type: "pic",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      },
+      {
+        date: new Date(2016, 0, 1),
+        title: "g3",
+        type: "video",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      },
+      {
+        date: new Date(2015, 0, 1),
+        title: "g4",
+        type: "pic",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      }
+    ]);
+
+    let service = await GameService.getIns();
+    let data = await service.gallery(0, 3);
+    let id = data[1].id;
+    // 点赞+1
+    {
+      await service.galleryCount(id);
+      let data = await service.gallery(0, 3);
+      assert(data[0].count === 100 && data[1].count === 101);
+    }
+  });
 });

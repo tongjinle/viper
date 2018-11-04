@@ -1,7 +1,9 @@
 import assert = require("assert");
 import config from "../../config";
 import helper from "../helper";
-import Database from "../../db";
+import MongoDb from "../../db";
+import RedisDb from "../../redisDb";
+import * as keys from "../../redisKeys";
 import { AxiosInstance } from "axios";
 import * as Protocol from "../../protocol";
 import { ErrCode } from "../../errCode";
@@ -10,11 +12,13 @@ import utils from "../../utils";
 let mockOpenId = config.mockOpenId;
 
 describe("game.handle", () => {
-  let db: Database;
+  let mongoDb: MongoDb;
+  let redisDb: RedisDb;
   let request: AxiosInstance;
   before(async () => {
     // db
-    db = await Database.getIns();
+    mongoDb = await MongoDb.getIns();
+    redisDb = await RedisDb.getIns();
   });
 
   beforeEach(async () => {
@@ -29,7 +33,7 @@ describe("game.handle", () => {
   });
 
   it("reward", async () => {
-    await db.getCollection("reward").insertOne({
+    await mongoDb.getCollection("reward").insertOne({
       index: 1,
       status: 0
     });
@@ -46,7 +50,7 @@ describe("game.handle", () => {
   });
 
   it("upvote", async () => {
-    await db.getCollection("reward").insertOne({
+    await mongoDb.getCollection("reward").insertOne({
       index: 1,
       status: 0,
       rule: {
@@ -54,14 +58,14 @@ describe("game.handle", () => {
       }
     });
 
-    await db
+    await mongoDb
       .getCollection("list")
       .insertMany([
         { index: 1, userId: "zst", username: "zst", count: 0 },
         { index: 1, userId: "xiao", username: "xiao", count: 0 }
       ]);
 
-    await db.getCollection("user").insertMany([
+    await mongoDb.getCollection("user").insertMany([
       {
         userId: config.mockOpenId,
         username: config.mockOpenId,
@@ -99,7 +103,7 @@ describe("game.handle", () => {
 
   // 不存在的up主
   it("upvote-invalidUperId", async () => {
-    await db.getCollection("reward").insertOne({
+    await mongoDb.getCollection("reward").insertOne({
       index: 1,
       status: 0,
       rule: {
@@ -107,14 +111,14 @@ describe("game.handle", () => {
       }
     });
 
-    await db
+    await mongoDb
       .getCollection("list")
       .insertMany([
         { index: 1, userId: "zst", username: "zst" },
         { index: 1, userId: "xiao", username: "xiao" }
       ]);
 
-    await db.getCollection("user").insertMany([
+    await mongoDb.getCollection("user").insertMany([
       {
         userId: config.mockOpenId,
         username: config.mockOpenId,
@@ -137,7 +141,7 @@ describe("game.handle", () => {
 
   // 不存在的upvoter
   xit("upvote-invalidUpvoterId", async () => {
-    await db.getCollection("reward").insertOne({
+    await mongoDb.getCollection("reward").insertOne({
       index: 1,
       status: 0,
       rule: {
@@ -145,14 +149,14 @@ describe("game.handle", () => {
       }
     });
 
-    await db
+    await mongoDb
       .getCollection("list")
       .insertMany([
         { index: 1, userId: "zst", username: "zst", count: 0 },
         { index: 1, userId: "xiao", username: "xiao", count: 0 }
       ]);
 
-    await db.getCollection("user").insertMany([
+    await mongoDb.getCollection("user").insertMany([
       {
         userId: "none",
         username: "none",
@@ -175,7 +179,7 @@ describe("game.handle", () => {
 
   // upvoter的消费方式不对
   it("upvote-invalidUpvoteType", async () => {
-    await db.getCollection("reward").insertOne({
+    await mongoDb.getCollection("reward").insertOne({
       index: 1,
       status: 0,
       rule: {
@@ -183,14 +187,14 @@ describe("game.handle", () => {
       }
     });
 
-    await db
+    await mongoDb
       .getCollection("list")
       .insertMany([
         { index: 1, userId: "zst", username: "zst" },
         { index: 1, userId: "xiao", username: "xiao" }
       ]);
 
-    await db.getCollection("user").insertMany([
+    await mongoDb.getCollection("user").insertMany([
       {
         userId: config.mockOpenId,
         username: config.mockOpenId,
@@ -213,7 +217,7 @@ describe("game.handle", () => {
 
   // upvoter的point不够
   it("upvote-notEnoughPoint", async () => {
-    await db.getCollection("reward").insertOne({
+    await mongoDb.getCollection("reward").insertOne({
       index: 1,
       status: 0,
       rule: {
@@ -221,14 +225,14 @@ describe("game.handle", () => {
       }
     });
 
-    await db
+    await mongoDb
       .getCollection("list")
       .insertMany([
         { index: 1, userId: "zst", username: "zst" },
         { index: 1, userId: "xiao", username: "xiao" }
       ]);
 
-    await db.getCollection("user").insertMany([
+    await mongoDb.getCollection("user").insertMany([
       {
         userId: config.mockOpenId,
         username: config.mockOpenId,
@@ -251,7 +255,7 @@ describe("game.handle", () => {
 
   // upvoter的point不够
   it("upvote-hasWinner", async () => {
-    await db.getCollection("reward").insertOne({
+    await mongoDb.getCollection("reward").insertOne({
       index: 1,
       status: 0,
       rule: {
@@ -259,14 +263,14 @@ describe("game.handle", () => {
       }
     });
 
-    await db
+    await mongoDb
       .getCollection("list")
       .insertMany([
         { index: 1, userId: "zst", username: "zst", count: 0 },
         { index: 1, userId: "xiao", username: "xiao", count: 0 }
       ]);
 
-    await db.getCollection("user").insertMany([
+    await mongoDb.getCollection("user").insertMany([
       {
         userId: config.mockOpenId,
         username: config.mockOpenId,
@@ -297,14 +301,14 @@ describe("game.handle", () => {
   });
 
   it("list", async () => {
-    await db.getCollection("reward").insertOne({
+    await mongoDb.getCollection("reward").insertOne({
       index: 1,
       status: 0,
       rule: {
         endTime: new Date(9999, 1, 1)
       }
     });
-    await db.getCollection("list").insertMany([
+    await mongoDb.getCollection("list").insertMany([
       {
         index: 1,
         userId: "zst",
@@ -356,7 +360,7 @@ describe("game.handle", () => {
   });
 
   it("addPoint", async () => {
-    await db
+    await mongoDb
       .getCollection("user")
       .insertOne({ userId: mockOpenId, point: 0, coin: 0 });
 
@@ -387,7 +391,7 @@ describe("game.handle", () => {
   });
 
   it("myUpvote", async () => {
-    await db
+    await mongoDb
       .getCollection("upvote")
       .insertMany([
         { index: 1, userId: "zst", count: 100, upvoterId: mockOpenId },
@@ -406,7 +410,7 @@ describe("game.handle", () => {
   });
 
   it("myPoint", async () => {
-    await db.getCollection("user").insertOne({
+    await mongoDb.getCollection("user").insertOne({
       userId: config.mockOpenId,
       username: config.mockOpenId,
       point: 100,
@@ -422,7 +426,7 @@ describe("game.handle", () => {
   });
 
   it("myPoint-with wrong token", async () => {
-    await db.getCollection("user").insertOne({
+    await mongoDb.getCollection("user").insertOne({
       userId: config.mockOpenId,
       username: config.mockOpenId,
       point: 100,
@@ -441,7 +445,7 @@ describe("game.handle", () => {
   });
 
   it("myAddPoint", async () => {
-    await db.getCollection("user").insertOne({
+    await mongoDb.getCollection("user").insertOne({
       userId: config.mockOpenId,
       username: config.mockOpenId,
       point: 100,
@@ -462,5 +466,65 @@ describe("game.handle", () => {
 
     assert(res.data.sign === 1);
     assert(res.data.invite === 9);
+  });
+
+  it("gallery", async () => {
+    await mongoDb.getCollection("gallery").insertMany([
+      {
+        date: new Date(2018, 0, 1),
+        title: "g1",
+        type: "pic",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      },
+      {
+        date: new Date(2017, 0, 1),
+        title: "g2",
+        type: "pic",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      },
+      {
+        date: new Date(2016, 0, 1),
+        title: "g3",
+        type: "video",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      },
+      {
+        date: new Date(2015, 0, 1),
+        title: "g4",
+        type: "pic",
+        count: 100,
+        logoUrl: "logo",
+        resource: ["a1", "a2"]
+      }
+    ]);
+
+    let res = await request.get("/game/gallery", {
+      params: {
+        pageIndex: 0,
+        pageSize: 2
+      }
+    });
+
+    assert(res.data.list.length === 2);
+    let item = res.data.list[0];
+    assert(item.title === "g1");
+    assert.deepEqual(item.resource, ["a1", "a2"]);
+
+    // 如果没有缓存过,则不会计数到redis
+    let id = item.id;
+    {
+      let res = await request.post("/game/galleryCount", {
+        id
+      });
+
+      let item = await redisDb.get(keys.galleryItem(id));
+      assert(JSON.parse(item).count === 101);
+    }
   });
 });

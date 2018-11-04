@@ -9,9 +9,11 @@ let redisDb: RedisDb;
 let clearAll = async () => {
   await open();
   await Promise.all(
-    ["user", "upvote", "list", "reward", "memory", "token"].map(async n => {
-      await db.getCollection(n).deleteMany({});
-    })
+    ["user", "upvote", "list", "reward", "memory", "token", "gallery"].map(
+      async n => {
+        await db.getCollection(n).deleteMany({});
+      }
+    )
   );
 
   // redis

@@ -182,4 +182,28 @@ export default function handle(app: express.Express) {
     resData = data;
     res.json(resData);
   });
+
+  app.get("/game/gallery", async (req, res) => {
+    let resData: Protocol.IResGallery | Protocol.IResErr;
+
+    let { pageIndex, pageSize } = req.query as Protocol.IReqGallery;
+
+    let service = await GameService.getIns();
+
+    let data = await service.gallery(pageIndex - 0, pageSize - 0);
+    resData = {
+      list: data
+    };
+
+    res.json(resData);
+  });
+
+  app.post("/game/galleryCount", async (req, res) => {
+    let { id } = req.body as Protocol.IReqGalleryCount;
+    console.log(id);
+    let service = await GameService.getIns();
+    await service.galleryCount(id);
+
+    res.json({});
+  });
 }

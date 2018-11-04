@@ -195,3 +195,28 @@ export interface IResMyAddPoint {
   sign: number;
   invite: number;
 }
+
+// gallery
+export interface IReqGallery {
+  pageIndex: number;
+  pageSize: number;
+}
+
+// galleryCount
+export interface IResGallery {
+  list: {
+    id: string;
+    type: "pic" | "video";
+    logoUrl: string;
+    title: string;
+    count: number;
+    resource: string[];
+  }[];
+}
+
+// gallery count
+export interface IReqGalleryCount {
+  id: string;
+}
+
+export interface IResGalleryCount {}
