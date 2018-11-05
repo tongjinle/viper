@@ -278,7 +278,9 @@ export default class GameService {
           // logo图片的url
           logoUrl: item.logoUrl,
           // 资源url数组
-          resource: item.resource
+          resource: item.resource,
+          // 时间戳
+          date: item.date
         });
       }
     }

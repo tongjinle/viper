@@ -95,11 +95,11 @@ async function createDevData(ins) {
   // reward
   await curr.collection("reward").insertMany([
     {
-      index: 1,
+      index: 2,
       status: 0,
       reward: {
-        desc: "500元萝莉裙",
-        value: 500,
+        desc: "YSL口红",
+        value: 300,
         photoList: [
           prefix +
             "/1/poster/lg_1392380_1537887123_5baa4b9324e10.jpg!l1000_b.jpg"
@@ -115,93 +115,128 @@ async function createDevData(ins) {
   // list
   await curr.collection("list").insertMany([
     {
-      index: 1,
-      userId: "chaoxiong",
-      username: "超凶",
-      logo: prefix + "/1/超凶/1F048D0787EF9BD64FDBCCAD34F0EE16.jpg",
+      index: 2,
+      userId: "gshock",
+      username: "gshock",
+      logo:
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/gshock-992977181/52BD2A59FA08D5885052F3D486FA3EFC.png",
       photoList: [
-        prefix + "/1/超凶" + "/1F048D0787EF9BD64FDBCCAD34F0EE16.jpg",
-        prefix + "/1/超凶" + "/2DACC2DE732B1435B77522B330397D8C.jpg",
-        prefix + "/1/超凶" + "/74AB4DAF7743D485A7A93CC71BB03AF2.jpg",
-        prefix + "/1/超凶" + "/0801D8695FDCC07CAE5B0A7611833B1A.jpg",
-        prefix + "/1/超凶" + "/D70EEED6C53D9B8B6DF2EE4CA6B409D9.jpg",
-        prefix + "/1/超凶" + "/FCD6F391C5449207C39527D08B847CC4.jpg"
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/gshock-992977181/52BD2A59FA08D5885052F3D486FA3EFC.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/gshock-992977181/870061D58C2CBE73207D019B3B975D52.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/gshock-992977181/A9FC476C3A573E596793533FE3FF30FC.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/gshock-992977181/E860089D3766DCE1A8A2E75413D959B8.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/gshock-992977181/ECF45366285890E1729B3D2DEF5A4178.png"
       ],
       count: 0
     },
     {
-      index: 1,
-      userId: "keaijiu",
-      username: "可爱九",
-      logo: prefix + "/1/可爱九/" + "22F8CEEA99B5F99AAAA9CD9EA0DE804D.jpg",
-
+      index: 2,
+      userId: "兔兔鸭",
+      username: "兔兔鸭",
+      logo:
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E5%85%94%E5%85%94%E9%B8%AD-3267729362/1.jpg",
       photoList: [
-        prefix + "/1/可爱九" + "/22F8CEEA99B5F99AAAA9CD9EA0DE804D.jpg",
-        prefix + "/1/可爱九" + "/1792C6A17007261289632CBF202ADD8C.jpg",
-        prefix + "/1/可爱九" + "/A74F2223EF87904B38FF483FC47DC7D8.jpg",
-        prefix + "/1/可爱九" + "/CC00331552B4415D33CDC885CDBDECED.jpg",
-        prefix + "/1/可爱九" + "/DC3146AA093D4C763340804BBFE29E78.jpg",
-        prefix + "/1/可爱九" + "/FC1F5C6922DF82ED216C4AAD14822225.jpg"
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E5%85%94%E5%85%94%E9%B8%AD-3267729362/1.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E5%85%94%E5%85%94%E9%B8%AD-3267729362/2.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E5%85%94%E5%85%94%E9%B8%AD-3267729362/3.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E5%85%94%E5%85%94%E9%B8%AD-3267729362/4.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E5%85%94%E5%85%94%E9%B8%AD-3267729362/5.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E5%85%94%E5%85%94%E9%B8%AD-3267729362/6.jpg"
       ],
       count: 0
     },
     {
-      index: 1,
-      userId: "luoshi",
-      username: "萝世",
-      logo: prefix + "/1/萝世" + "/6E7D7CB7AF8EEA6FCC064720A8C3DA60",
+      index: 2,
+      userId: "甜系",
+      username: "甜系",
+      logo:
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%94%9C%E7%B3%BB-2143296822/1637B5907070D1032854D895A176C320.jpg",
       photoList: [
-        prefix + "/1/萝世" + "/6E7D7CB7AF8EEA6FCC064720A8C3DA60.jpg",
-        prefix + "/1/萝世" + "/58DECC2DB2CD880C5331643597184A7D.jpg",
-        prefix + "/1/萝世" + "/680E2DD98B674403F7AB8343D55A17F0.jpg",
-        prefix + "/1/萝世" + "/C85DC5774532D6676B3E7D9E77BF9716.jpg",
-        prefix + "/1/萝世" + "/DF80ECD5A47AE57CA23D42C0B62413DA.jpg",
-        prefix + "/1/萝世" + "/F23DAECCAFBB75A7D0570EC5BDE2C2B4.jpg"
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%94%9C%E7%B3%BB-2143296822/1637B5907070D1032854D895A176C320.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%94%9C%E7%B3%BB-2143296822/2251A1643D54111EC12D149F4DC2A06C.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%94%9C%E7%B3%BB-2143296822/8A9F28FFEF915A17E28E6613263233C9.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%94%9C%E7%B3%BB-2143296822/C7D951BA018B0DBE2BA6B2359BEC72C5.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%94%9C%E7%B3%BB-2143296822/CED94FEDA5071F901050A16A56ED65F0.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%94%9C%E7%B3%BB-2143296822/E998CEAE39CCA6FD70F898AE62779A16.jpg"
       ],
       count: 0
     },
     {
-      index: 1,
-      userId: "meimei",
-      username: "玫玫",
-      logo: prefix + "/1/玫玫" + "/4F68525169691F5AFBD063CC094C57AF.jpg",
+      index: 2,
+      userId: "红红鸭",
+      username: "红红鸭",
+      logo:
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%BA%A2%E7%BA%A2%E9%B8%AD-2783632036/52911C30AAD83D83509183A4218F5062.png",
       photoList: [
-        prefix + "/1/玫玫" + "/4F68525169691F5AFBD063CC094C57AF.jpg",
-        prefix + "/1/玫玫" + "/58F4E3DC61B7D4C51EEB301B27C946A0.jpg",
-        prefix + "/1/玫玫" + "/6962454F52C63912C116DF6D4EF33FD5.jpg",
-        prefix + "/1/玫玫" + "/35448794BCD33CD8FC6B5C328E3D90D4.jpg",
-        prefix + "/1/玫玫" + "/B703D7CD5495C4377F8883A6FB137E30.jpg",
-        prefix + "/1/玫玫" + "/FF5A6617282E22B6E11CACB8105C3F86.jpg"
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%BA%A2%E7%BA%A2%E9%B8%AD-2783632036/52911C30AAD83D83509183A4218F5062.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%BA%A2%E7%BA%A2%E9%B8%AD-2783632036/6D8530DEC40633B25861AF4FC2E501C1.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%BA%A2%E7%BA%A2%E9%B8%AD-2783632036/98C64C6D427B51C14688FBA0D83A8297.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%BA%A2%E7%BA%A2%E9%B8%AD-2783632036/D4D9E752E987A01661EE338734C83179.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%BA%A2%E7%BA%A2%E9%B8%AD-2783632036/D865124EC608CFDBB27521B4FD227E6A.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E7%BA%A2%E7%BA%A2%E9%B8%AD-2783632036/DFF9C3B19E9BEBAD3932B9CC02DFA20E.png"
       ],
       count: 0
     },
     {
-      index: 1,
-      userId: "saigao",
-      username: "赛高",
-      logo: prefix + "/1/赛高" + "/74D4C6210FFD058DF469E049C5626C96.jpg",
+      index: 2,
+      userId: "锦鲤妹妹",
+      username: "锦鲤妹妹",
+      logo:
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%94%A6%E9%B2%A4%E5%A6%B9%E5%A6%B9-230624096/247E04CED0E36E77BD976E9299FB288C.jpg",
       photoList: [
-        prefix + "/1/赛高" + "/74D4C6210FFD058DF469E049C5626C96.jpg",
-        prefix + "/1/赛高" + "/514A1B4F48D06BF182F2DA46358DFB38.jpg",
-        prefix + "/1/赛高" + "/702BCB36CD8BA3E5A68F59FB528F81B8.jpg",
-        prefix + "/1/赛高" + "/8417CEC5B7561D1F7E1FC268223B1003.jpg",
-        prefix + "/1/赛高" + "/FB80DAFF65321933E3FE945AD11CE76A.jpg",
-        prefix + "/1/赛高" + "/FF1B993AEB48DED807E751CCBC5E1CBD.jpg"
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%94%A6%E9%B2%A4%E5%A6%B9%E5%A6%B9-230624096/247E04CED0E36E77BD976E9299FB288C.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%94%A6%E9%B2%A4%E5%A6%B9%E5%A6%B9-230624096/305F037BFB8E4FF4925C2F0D90DDDF61.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%94%A6%E9%B2%A4%E5%A6%B9%E5%A6%B9-230624096/49B893ED281C48A4501BA0188333F009.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%94%A6%E9%B2%A4%E5%A6%B9%E5%A6%B9-230624096/57DB929A7961BC2322F36E05ADA18C41.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%94%A6%E9%B2%A4%E5%A6%B9%E5%A6%B9-230624096/8EECCEFBD19FE34C957875B9F2A4B60E.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%94%A6%E9%B2%A4%E5%A6%B9%E5%A6%B9-230624096/C09673B762DC5404950CFC91960E4FFE.jpg"
       ],
       count: 0
     },
     {
-      index: 1,
-      userId: "xizi",
-      username: "希子",
-      logo: "https://api.puman.xyz/static/images/11.jpg",
+      index: 2,
+      userId: "阿菲",
+      username: "阿菲",
+      logo:
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%98%BF%E8%8F%B2-3107614076/9C7372D50256247DB94DE7A3E62D454E.jpg",
       photoList: [
-        prefix + "/1/希子" + "/05ACD9C529F95D1CF5CC3BEAD135F43F.jpg",
-        prefix + "/1/希子" + "/625DC5025E9EF450943B96E3AEA6D832.jpg",
-        prefix + "/1/希子" + "/03453B798C80E367321152781B05C06D.jpg",
-        prefix + "/1/希子" + "/05546514D344AAE2BC47EE6236F15E5C.jpg",
-        prefix + "/1/希子" + "/161596078127CA09FA66A0503D416746.jpg",
-        prefix + "/1/希子" + "/D049B125E10AB58495544B939344EAF8.jpg"
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%98%BF%E8%8F%B2-3107614076/9C7372D50256247DB94DE7A3E62D454E.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%98%BF%E8%8F%B2-3107614076/BF8C70A4969FEEDAC3152CBEE2B96E53.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%98%BF%E8%8F%B2-3107614076/EFBB579C89ED7D66683F0F06EFB5FB05.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%98%BF%E8%8F%B2-3107614076/7518F4F852F7C5A9B653A2711640C47E.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%98%BF%E8%8F%B2-3107614076/6A9DACF94124DC274CE97721281BA0AA.jpg"
+      ],
+      count: 0
+    },
+    {
+      index: 2,
+      userId: "雨杭",
+      username: "雨杭",
+      logo:
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9B%A8%E6%9D%AD-2227051085/1ACD6E48E07F5FBD9EA04210D03F6379.png",
+      photoList: [
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9B%A8%E6%9D%AD-2227051085/1ACD6E48E07F5FBD9EA04210D03F6379.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9B%A8%E6%9D%AD-2227051085/376E28D673BA73EA2E411280D23C8279.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9B%A8%E6%9D%AD-2227051085/747DFACB1992A538C98358D6D3CC0710.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9B%A8%E6%9D%AD-2227051085/7AA178595E9E488DC91BBDA6A09AD5BC.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9B%A8%E6%9D%AD-2227051085/8F015D3064E31F3B82EF2ADDCFA1CCF6.png",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9B%A8%E6%9D%AD-2227051085/DA0F96610174C547556652B27CB52B6F.png"
+      ],
+      count: 0
+    },
+    {
+      index: 2,
+      userId: "静静是个肥宅",
+      username: "静静是个肥宅",
+      logo:
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9D%99%E9%9D%99%E6%98%AF%E4%B8%AA%E6%AD%BB%E8%82%A5%E5%AE%85-1239052932/74854DA7B3EA89157A57F28F20180AB3.jpg",
+      photoList: [
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9D%99%E9%9D%99%E6%98%AF%E4%B8%AA%E6%AD%BB%E8%82%A5%E5%AE%85-1239052932/74854DA7B3EA89157A57F28F20180AB3.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9D%99%E9%9D%99%E6%98%AF%E4%B8%AA%E6%AD%BB%E8%82%A5%E5%AE%85-1239052932/1A24E635123864CFDFFB01107E1B145E.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9D%99%E9%9D%99%E6%98%AF%E4%B8%AA%E6%AD%BB%E8%82%A5%E5%AE%85-1239052932/87AAA4E2651CB3D541691A5EA74A85AE.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9D%99%E9%9D%99%E6%98%AF%E4%B8%AA%E6%AD%BB%E8%82%A5%E5%AE%85-1239052932/AA8DD62A9F98CE60B4DB1A753579444E.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9D%99%E9%9D%99%E6%98%AF%E4%B8%AA%E6%AD%BB%E8%82%A5%E5%AE%85-1239052932/DFBD651621B38A685E6920815E7B67CB.jpg",
+        "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E6%AF%94%E8%B5%9B/%E9%9D%99%E9%9D%99%E6%98%AF%E4%B8%AA%E6%AD%BB%E8%82%A5%E5%AE%85-1239052932/E0F40264545B2DC3C95CABDED34952A9.jpg"
       ],
       count: 0
     }

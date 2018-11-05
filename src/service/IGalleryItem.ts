@@ -10,4 +10,6 @@ export default interface IGalleryItem {
   logoUrl: string;
   // 资源url数组
   resource: string[];
+  // 时间
+  date: number;
 }
