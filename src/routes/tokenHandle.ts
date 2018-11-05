@@ -40,6 +40,7 @@ export default function handle(app: express.Express) {
 
     let service = await TokenService.getIns();
     let { token, expires } = await service.bind(openId);
+    console.log({ token, expires, openId });
     resData = { token, expires };
     res.json(resData);
   });
