@@ -1,8 +1,8 @@
 const mongodb = require("mongodb");
 
 // let connectStr = 'mongodb://puman:puman@118.31.11.29:27017/doctor';
-// let connectStr = "mongodb://118.31.11.29:27017/zst";
-let connectStr = "mongodb://localhost:27017/zst";
+let connectStr = "mongodb://118.31.11.29:27017/zst";
+// let connectStr = "mongodb://localhost:27017/zst";
 
 let { MongoClient } = mongodb;
 
@@ -45,12 +45,12 @@ let info = [
     date: new Date()
   },
   {
-    title: "萌妹子",
+    title: "我是你的前女友",
     type: "video",
     logoUrl:
-      "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E8%A7%86%E9%A2%91/594B7871917A76656D79205237852F57.jpg?x-oss-process=style/w50",
+      "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E8%A7%86%E9%A2%91/%E8%B6%85%E5%87%B6.jpg?x-oss-process=style/w50",
     resource: [
-      "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E8%A7%86%E9%A2%91/Twitter%20%E4%B8%8A%E7%9A%84%20%23japanesegirl%20%E8%AF%9D%E9%A2%98%E6%A0%87%E7%AD%BE.mp4"
+      "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com/%E8%A7%86%E9%A2%91/%E8%B6%85%E5%87%B6.mp4"
     ],
     count: 44,
     date: new Date()
